@@ -9,13 +9,9 @@ import java.util.List;
 
 public class EmpresaView extends JFrame {
     private JComboBox<String> empresaComboBox;
-    private JTextField cifField;
+    private JTextField idempresaField;
     private JTextField nombreField;
-    private JTextField telefonoField;
-    private JTextField direccionField;
     private JTextField sectorField;
-    private JTextField tecnologiasField;
-    private JTextField numEmpleadosField;
     private JButton addButton;
 
     public EmpresaView() {
@@ -28,32 +24,17 @@ public class EmpresaView extends JFrame {
         JPanel panel = new JPanel(new GridLayout(8, 2));
 
         panel.add(new JLabel("CIF:"));
-        cifField = new JTextField();
-        panel.add(cifField);
+        idempresaField = new JTextField();
+        panel.add(idempresaField);
 
         panel.add(new JLabel("Nombre:"));
         nombreField = new JTextField();
         panel.add(nombreField);
-
-        panel.add(new JLabel("Teléfono:"));
-        telefonoField = new JTextField();
-        panel.add(telefonoField);
-
-        panel.add(new JLabel("Dirección:"));
-        direccionField = new JTextField();
-        panel.add(direccionField);
-
+        
         panel.add(new JLabel("Sector:"));
         sectorField = new JTextField();
         panel.add(sectorField);
 
-        panel.add(new JLabel("Tecnologías:"));
-        tecnologiasField = new JTextField();
-        panel.add(tecnologiasField);
-
-        panel.add(new JLabel("Número de Empleados:"));
-        numEmpleadosField = new JTextField();
-        panel.add(numEmpleadosField);
 
         addButton = new JButton("Añadir Empresa");
         panel.add(addButton);
@@ -69,33 +50,18 @@ public class EmpresaView extends JFrame {
         getContentPane().add(comboBoxPanel, BorderLayout.SOUTH);
     }
 
-    public String getCIF() {
-        return cifField.getText();
+    public String getidempresa() {
+        return idempresaField.getText();
     }
 
     public String getNombre() {
         return nombreField.getText();
     }
 
-    public String getTelefono() {
-        return telefonoField.getText();
-    }
-
-    public String getDireccion() {
-        return direccionField.getText();
-    }
-
     public String getSector() {
         return sectorField.getText();
     }
 
-    public String getTecnologias() {
-        return tecnologiasField.getText();
-    }
-
-    public String getNumEmpleados() {
-        return numEmpleadosField.getText().trim();
-    }
 
     public JButton getAddButton() {
         return addButton;
@@ -106,12 +72,8 @@ public class EmpresaView extends JFrame {
     }
     
     public void mostrarInformacionEmpresa(Empresa empresa) {
-        cifField.setText(empresa.getCIF());
+        idempresaField.setText(empresa.getIdempresa());
         nombreField.setText(empresa.getNombre());
-        telefonoField.setText(empresa.getTelefono());
-        direccionField.setText(empresa.getDireccion());
         sectorField.setText(empresa.getSector());
-        tecnologiasField.setText(empresa.getTecnologias());
-        numEmpleadosField.setText(String.valueOf(empresa.getNumEmpleados()));
     }
 }

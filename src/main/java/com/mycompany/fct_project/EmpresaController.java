@@ -25,38 +25,18 @@ public class EmpresaController {
     }
 
     private void addEmpresa() {
-        String CIF = view.getCIF();
+        String idempresa = view.getidempresa();
         String nombre = view.getNombre();
-        String telefono = view.getTelefono();
-        String direccion = view.getDireccion();
         String sector = view.getSector();
-        String tecnologias = view.getTecnologias();
-        String numEmpleadosString = view.getNumEmpleados();
-        int numEmpleados;
-
-        // Verificar si se proporciona un valor válido para el número de empleados
-        if (numEmpleadosString.isEmpty()) {
-            JOptionPane.showMessageDialog(view, "Por favor, introduzca el número de empleados", "Error", JOptionPane.ERROR_MESSAGE);
-            return; // Salir del método si no se proporciona un número válido de empleados
-        }
-
-        try {
-            numEmpleados = Integer.parseInt(numEmpleadosString);
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(view, "Por favor, introduzca un número válido de empleados", "Error", JOptionPane.ERROR_MESSAGE);
-            return; // Salir del método si no se proporciona un número válido de empleados
-        }
-
-
 
 
         // Validar que al menos uno de los campos no esté vacío
-        if (CIF.isEmpty() && nombre.isEmpty() && telefono.isEmpty() && direccion.isEmpty() && sector.isEmpty() && tecnologias.isEmpty()) {
+        if (idempresa.isEmpty() && nombre.isEmpty() && sector.isEmpty()) {
             JOptionPane.showMessageDialog(view, "Por favor, complete al menos uno de los campos antes de añadir la empresa", "Error", JOptionPane.ERROR_MESSAGE);
             return; // Salir del método si todos los campos están vacíos
         }
 
-        Empresa empresa = new Empresa(CIF, nombre, telefono, direccion, sector, tecnologias, numEmpleados);
+        Empresa empresa = new Empresa(idempresa, nombre, sector);
 
         try {
             service.addEmpresa(empresa);

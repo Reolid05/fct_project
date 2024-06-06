@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseConnection {
-    private static final String URL = "jdbc:postgresql://192.168.1.10:5432/fct_management";
+    private static final String URL = "jdbc:postgresql://192.168.1.10:5432/DB_FCT";
     private static final String USER = "postgres";
     private static final String PASSWORD = "Virtual01";
 

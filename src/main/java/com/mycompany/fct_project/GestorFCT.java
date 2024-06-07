@@ -15,6 +15,10 @@ public class GestorFCT extends javax.swing.JFrame {
      */
     public GestorFCT() {
         initComponents();
+        
+        // Mostrar el diálogo de configuración
+        ConfigDialog configDialog = new ConfigDialog(this, true);
+        configDialog.setVisible(true);
     }
 
     /**

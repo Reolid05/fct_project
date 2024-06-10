@@ -1,8 +1,12 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
- */
 package com.mycompany.fct_project;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import javax.swing.JOptionPane;
+import javax.swing.JFrame;
+import javax.swing.JDialog;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -16,6 +20,7 @@ public class ConfigDialogLogin extends javax.swing.JDialog {
     public ConfigDialogLogin(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        jTextField2.setText("jdbc:postgresql://192.168.1.10:5432/DB_FCT");
     }
 
     /**
@@ -145,6 +150,23 @@ public class ConfigDialogLogin extends javax.swing.JDialog {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        String user = jTextField1.getText();
+        String password = new String(jPasswordField1.getPassword());        
+
+        if (DatabaseConnection.testConnection()) {
+            UserAuthentication auth = new UserAuthentication();
+            String role = auth.authenticateUser(user, password);
+
+            if (role != null) {
+                JOptionPane.showMessageDialog(this, "Login successful! Role: " + role);
+                ConfigDialogMenu menu = new ConfigDialogMenu((java.awt.Frame)SwingUtilities.getWindowAncestor(this), true);
+                menu.setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(this, "Invalid credentials.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Error connecting to the database.");
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField1ActionPerformed

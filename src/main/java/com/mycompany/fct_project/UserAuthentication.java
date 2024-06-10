@@ -11,7 +11,7 @@ public class UserAuthentication {
         String query = "SELECT rol FROM usuarios WHERE username = ? AND password = ?";
 
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement stmt = connection.prepareStatement(query)) {
+            PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setString(1, username);
             stmt.setString(2, password);
 

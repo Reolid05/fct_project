@@ -149,7 +149,6 @@ public class ConfigDialogLogin extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
         String user = jTextField1.getText();
         String password = new String(jPasswordField1.getPassword());        
 
@@ -159,7 +158,8 @@ public class ConfigDialogLogin extends javax.swing.JDialog {
 
             if (role != null) {
                 JOptionPane.showMessageDialog(this, "Login successful! Role: " + role);
-                ConfigDialogMenu menu = new ConfigDialogMenu((java.awt.Frame)SwingUtilities.getWindowAncestor(this), true);
+                this.setVisible(false);
+                ConfigDialogMenu menu = new ConfigDialogMenu(null, true);
                 menu.setVisible(true);
             } else {
                 JOptionPane.showMessageDialog(this, "Invalid credentials.");

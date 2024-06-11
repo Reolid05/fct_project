@@ -4,6 +4,7 @@
  */
 package com.mycompany.fct_project;
 
+import com.mycompany.fct_project.DatabaseConnection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.CallableStatement;
@@ -11,8 +12,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JComboBox;
 
 /**
  *
@@ -20,14 +23,13 @@ import java.util.List;
  */
 public class ConfigDialogFCT extends javax.swing.JDialog {
     
-
-
     /**
      * Creates new form ConfigDialogStart
      */
     public ConfigDialogFCT(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+
         
         // Agregar evento al botón
         jButton1.addActionListener(new ActionListener() {
@@ -38,12 +40,17 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
         });
         pack();
         
-        
+        poblarComboBoxCiclo();
+        poblarComboBoxCurso();
+        poblarComboBoxGrupo();  
+        poblarComboBoxEmpresa();
+        poblarComboBoxCursoEscolarC2C3C4();
+        poblarComboBoxCursoEscolarC6();
         
     }
    
   /**
-   * FUNCION C2 
+   * FUNCION C2 ----------------------------
    */
     private List<String> llamarFuncionC2(String ciclo, String curso, String cursoEscolar) {
         String query = "SELECT * FROM c2(?, ?, ?)";
@@ -76,8 +83,41 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
         }
         jTextPane1.setText(sb.toString());
     }
+   
+
+    private void poblarComboBoxCiclo() {
+        String query = "SELECT DISTINCT ciclo FROM CICLO";
+        try (Connection con = DatabaseConnection.getConnection();
+             Statement stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            while (rs.next()) {
+                jComboBoxCiclo.addItem(rs.getString("ciclo"));
+                jComboBoxCicloC6.addItem(rs.getString("ciclo"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void poblarComboBoxCurso() {
+        String query = "SELECT DISTINCT curso FROM CICLO";
+        try (Connection con = DatabaseConnection.getConnection();
+             Statement stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            while (rs.next()) {
+                jComboBoxCurso.addItem(rs.getString("curso"));
+                jComboBoxCursoC6.addItem(rs.getString("curso"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
     
-    
+   /**
+   * FUNCION C3 ----------------------------
+   **/
     private List<String> llamarFuncionC3(String grupo, String cursoEscolar) {
         String query = "SELECT * FROM c3(?, ?)";
         List<String> resultados = new ArrayList<>();
@@ -115,9 +155,139 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
         }
         jTextPaneC3.setText(sb.toString());
     }
-   
+    
+    private void poblarComboBoxGrupo() {
+        String query = "SELECT DISTINCT nombreGrupo FROM GRUPO";
+        try (Connection con = DatabaseConnection.getConnection();
+             Statement stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            while (rs.next()) {
+                jComboBoxGrupoC3.addItem(rs.getString("nombreGrupo"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private void poblarComboBoxCursoEscolarC2C3C4() {
+        String query = "SELECT DISTINCT cursoescolar FROM realizan_fct";
+        try (Connection con = DatabaseConnection.getConnection();
+             Statement stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            while (rs.next()) {
+                jComboBoxCursoEscolarC3.addItem(rs.getString("cursoescolar"));
+                jComboBoxCursoEscolarC2.addItem(rs.getString("cursoescolar"));
+                jComboBoxCursoEscolarC4.addItem(rs.getString("cursoescolar"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private void poblarComboBoxEmpresa() {
+        String query = "SELECT DISTINCT nombre FROM EMPRESA";
+        try (Connection con = DatabaseConnection.getConnection();
+             Statement stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            while (rs.next()) {
+                jComboBoxEmpresaC4.addItem(rs.getString("nombre"));
+                jComboBoxEmpresaC6.addItem(rs.getString("nombre"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+     
+     
+   /**
+   * FUNCION C4 ----------------------------
+   **/
+     
+    private List<String> llamarFuncionC4(String empresaNombre, String cursoEscolar) {
+        String query = "SELECT * FROM c4(?, ?)";
+        List<String> resultados = new ArrayList<>();
+
+        try (Connection con = DatabaseConnection.getConnection();
+            PreparedStatement stmt = con.prepareStatement(query)) {
+
+            stmt.setString(1, empresaNombre);
+            stmt.setString(2, cursoEscolar);
+
+             ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                String grupoNombre = rs.getString("grupo_nombre");
+                int numAlumnos = rs.getInt("num_alumnos");
+                resultados.add("Grupo: " + grupoNombre + ", Número de alumnos: " + numAlumnos);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return resultados;
+    }
+
+    private void actualizarTextPaneC4(List<String> resultados) {
+        StringBuilder sb = new StringBuilder();
+        for (String resultado : resultados) {
+            sb.append(resultado).append("\n");
+        }
+        jTextPaneC4.setText(sb.toString());
+    }
 
     
+   /**
+   * FUNCION C6 ----------------------------
+   **/
+    
+    private List<String> llamarFuncionC6(String empresaNombre, String cicloNombre, String cicloCurso, String cursoEscolar) {
+        String query = "SELECT * FROM c6(?, ?, ?, ?)";
+        List<String> resultados = new ArrayList<>();
+
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement stmt = con.prepareStatement(query)) {
+
+            stmt.setString(1, empresaNombre);
+            stmt.setString(2, cicloNombre);
+            stmt.setString(3, cicloCurso);
+            stmt.setString(4, cursoEscolar);
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                String mensaje = rs.getString("mensaje");
+                resultados.add("Mensaje: " + mensaje);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return resultados;
+    }
+
+    private void actualizarTextPaneC6(List<String> resultados) {
+        StringBuilder sb = new StringBuilder();
+        for (String resultado : resultados) {
+            sb.append(resultado).append("\n");
+        }
+        jTextPaneC6.setText(sb.toString());
+    }
+    
+    private void poblarComboBoxCursoEscolarC6() {
+        String query = "SELECT DISTINCT cursoescolar FROM prevision_fct";
+        try (Connection con = DatabaseConnection.getConnection();
+             Statement stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            while (rs.next()) {
+                jComboBoxCursoEscolarC6.addItem(rs.getString("cursoescolar"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+     
+
+   
     
 
     /**
@@ -136,7 +306,7 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
         jLabel2 = new javax.swing.JLabel();
         jComboBoxCurso = new javax.swing.JComboBox<>();
         jLabel3 = new javax.swing.JLabel();
-        jComboBoxCursoEscolar = new javax.swing.JComboBox<>();
+        jComboBoxCursoEscolarC2 = new javax.swing.JComboBox<>();
         jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextPane1 = new javax.swing.JTextPane();
@@ -152,22 +322,22 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
         jComboBoxCursoEscolarC4 = new javax.swing.JComboBox<>();
         jLabel7 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        jComboBoxEmpresaC4 = new javax.swing.JComboBox<>();
         jButtonC4 = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTextPaneC4 = new javax.swing.JTextPane();
         jPanel4 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
-        jComboBox2 = new javax.swing.JComboBox<>();
-        jButtonC5 = new javax.swing.JButton();
+        jComboBoxEmpresaC6 = new javax.swing.JComboBox<>();
+        jButtonC6 = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jTextPaneC5 = new javax.swing.JTextPane();
-        jComboBoxCursoEscolarC5 = new javax.swing.JComboBox<>();
+        jTextPaneC6 = new javax.swing.JTextPane();
+        jComboBoxCursoEscolarC6 = new javax.swing.JComboBox<>();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
-        jComboBox3 = new javax.swing.JComboBox<>();
+        jComboBoxCicloC6 = new javax.swing.JComboBox<>();
         jLabel11 = new javax.swing.JLabel();
-        jComboBox4 = new javax.swing.JComboBox<>();
+        jComboBoxCursoC6 = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(new java.awt.Color(190, 228, 255));
@@ -178,7 +348,6 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
 
         jLabel1.setText("CICLO: ");
 
-        jComboBoxCiclo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SMX", "DAW", "DAM", "ASIX" }));
         jComboBoxCiclo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBoxCicloActionPerformed(evt);
@@ -187,7 +356,6 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
 
         jLabel2.setText("CURSO:");
 
-        jComboBoxCurso.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1º", "2º" }));
         jComboBoxCurso.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBoxCursoActionPerformed(evt);
@@ -196,12 +364,10 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
 
         jLabel3.setText("CURSO ESCOLAR:");
 
-        jComboBoxCursoEscolar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2022-2023", "2023-2024", "2024-2025", "2025-2026" }));
-        jComboBoxCursoEscolar.setSelectedIndex(1);
-        jComboBoxCursoEscolar.setSelectedItem(2);
-        jComboBoxCursoEscolar.addActionListener(new java.awt.event.ActionListener() {
+        jComboBoxCursoEscolarC2.setSelectedItem(2);
+        jComboBoxCursoEscolarC2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBoxCursoEscolarActionPerformed(evt);
+                jComboBoxCursoEscolarC2ActionPerformed(evt);
             }
         });
 
@@ -227,25 +393,22 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(26, 26, 26)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addGap(18, 18, 18)
-                                .addComponent(jComboBoxCurso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(18, 18, 18)
-                                .addComponent(jComboBoxCiclo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addComponent(jLabel2)
+                        .addGap(18, 18, 18)
+                        .addComponent(jComboBoxCurso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(18, 18, 18)
+                        .addComponent(jComboBoxCiclo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGap(0, 149, Short.MAX_VALUE)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jComboBoxCursoEscolar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jComboBoxCursoEscolarC2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(38, 38, 38))
         );
@@ -255,13 +418,13 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
                 .addGap(17, 17, 17)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jComboBoxCursoEscolar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jComboBoxCursoEscolarC2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(26, 26, 26)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(jComboBoxCiclo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jComboBoxCiclo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jComboBoxCurso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -276,8 +439,6 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
 
         jPanel2.setBackground(new java.awt.Color(217, 239, 255));
 
-        jComboBoxCursoEscolarC3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2022-2023", "2023-2024", "2024-2025", "2025-2026" }));
-        jComboBoxCursoEscolarC3.setSelectedIndex(1);
         jComboBoxCursoEscolarC3.setSelectedItem(2);
         jComboBoxCursoEscolarC3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -289,7 +450,6 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
 
         jLabel5.setText("GRUPO:");
 
-        jComboBoxGrupoC3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1CFMG", "2CFMG", "1CFMX", "2CFMX", "1CFSJ", "2CFSJ", "1CFSK", "2CFSK", "1CFSL", "2CFSL", "1CFSF", "2CFSF", "1CFSY", "2CFSY", "1CFSG", "2CFSG", "1CFSH", "2CFSH" }));
         jComboBoxGrupoC3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBoxGrupoC3ActionPerformed(evt);
@@ -355,8 +515,6 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
 
         jPanel3.setBackground(new java.awt.Color(217, 239, 255));
 
-        jComboBoxCursoEscolarC4.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2022-2023", "2023-2024", "2024-2025", "2025-2026" }));
-        jComboBoxCursoEscolarC4.setSelectedIndex(1);
         jComboBoxCursoEscolarC4.setSelectedItem(2);
         jComboBoxCursoEscolarC4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -367,8 +525,6 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
         jLabel7.setText("CURSO ESCOLAR:");
 
         jLabel6.setText("EMPRESA:");
-
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jButtonC4.setBackground(new java.awt.Color(239, 248, 255));
         jButtonC4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -404,8 +560,8 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addComponent(jLabel6)
                                 .addGap(18, 18, 18)
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(40, Short.MAX_VALUE))
+                                .addComponent(jComboBoxEmpresaC4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addGap(40, 40, 40))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -417,7 +573,7 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jComboBoxEmpresaC4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(12, 12, 12)
                 .addComponent(jButtonC4)
                 .addGap(18, 18, 18)
@@ -431,27 +587,29 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
 
         jLabel8.setText("EMPRESA:");
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        jButtonC5.setBackground(new java.awt.Color(239, 248, 255));
-        jButtonC5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButtonC5.setText("Consult");
-        jButtonC5.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(168, 184, 217), new java.awt.Color(168, 184, 217), java.awt.Color.gray, java.awt.Color.gray));
-        jButtonC5.addActionListener(new java.awt.event.ActionListener() {
+        jComboBoxEmpresaC6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonC5ActionPerformed(evt);
+                jComboBoxEmpresaC6ActionPerformed(evt);
             }
         });
 
-        jTextPaneC5.setEditable(false);
-        jScrollPane4.setViewportView(jTextPaneC5);
-
-        jComboBoxCursoEscolarC5.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2022-2023", "2023-2024", "2024-2025", "2025-2026" }));
-        jComboBoxCursoEscolarC5.setSelectedIndex(1);
-        jComboBoxCursoEscolarC5.setSelectedItem(2);
-        jComboBoxCursoEscolarC5.addActionListener(new java.awt.event.ActionListener() {
+        jButtonC6.setBackground(new java.awt.Color(239, 248, 255));
+        jButtonC6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jButtonC6.setText("Consult");
+        jButtonC6.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(168, 184, 217), new java.awt.Color(168, 184, 217), java.awt.Color.gray, java.awt.Color.gray));
+        jButtonC6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBoxCursoEscolarC5ActionPerformed(evt);
+                jButtonC6ActionPerformed(evt);
+            }
+        });
+
+        jTextPaneC6.setEditable(false);
+        jScrollPane4.setViewportView(jTextPaneC6);
+
+        jComboBoxCursoEscolarC6.setSelectedItem(2);
+        jComboBoxCursoEscolarC6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBoxCursoEscolarC6ActionPerformed(evt);
             }
         });
 
@@ -459,11 +617,13 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
 
         jLabel10.setText("CICLO:");
 
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBoxCicloC6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBoxCicloC6ActionPerformed(evt);
+            }
+        });
 
         jLabel11.setText("CURSO:");
-
-        jComboBox4.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -480,22 +640,22 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addComponent(jLabel11)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jComboBoxCursoC6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
                                 .addComponent(jLabel10)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jComboBoxCicloC6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
                                 .addComponent(jLabel8)
                                 .addGap(18, 18, 18)
-                                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(jComboBoxEmpresaC6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGap(77, 77, 77)
-                        .addComponent(jButtonC5, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jButtonC6, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBoxCursoEscolarC5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jComboBoxCursoEscolarC6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(40, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
@@ -504,23 +664,23 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
                 .addGap(20, 20, 20)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
-                    .addComponent(jComboBoxCursoEscolarC5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jComboBoxCursoEscolarC6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel8)
-                            .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jComboBoxEmpresaC6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel10)
-                            .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jComboBoxCicloC6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel11)
-                            .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jComboBoxCursoC6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButtonC5))
+                        .addComponent(jButtonC6))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 17, Short.MAX_VALUE)))
@@ -553,15 +713,15 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBoxCursoActionPerformed
 
-    private void jComboBoxCursoEscolarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxCursoEscolarActionPerformed
+    private void jComboBoxCursoEscolarC2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxCursoEscolarC2ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBoxCursoEscolarActionPerformed
+    }//GEN-LAST:event_jComboBoxCursoEscolarC2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         String ciclo = jComboBoxCiclo.getSelectedItem().toString();
         String curso = jComboBoxCurso.getSelectedItem().toString();
-        String cursoEscolar = jComboBoxCursoEscolar.getSelectedItem().toString();
+        String cursoEscolar = jComboBoxCursoEscolarC2.getSelectedItem().toString();
         
         List<String> resultados = llamarFuncionC2(ciclo, curso, cursoEscolar);
         actualizarTextPaneC2(resultados);
@@ -586,19 +746,40 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
 
     private void jComboBoxCursoEscolarC4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxCursoEscolarC4ActionPerformed
         // TODO add your handling code here:
+        
     }//GEN-LAST:event_jComboBoxCursoEscolarC4ActionPerformed
 
     private void jButtonC4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonC4ActionPerformed
         // TODO add your handling code here:
+        String empresa = jComboBoxEmpresaC4.getSelectedItem().toString();
+        String cursoEscolar = jComboBoxCursoEscolarC4.getSelectedItem().toString();
+        
+        List<String> resultados = llamarFuncionC4(empresa, cursoEscolar);
+        actualizarTextPaneC4(resultados);
     }//GEN-LAST:event_jButtonC4ActionPerformed
 
-    private void jButtonC5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonC5ActionPerformed
+    private void jButtonC6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonC6ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButtonC5ActionPerformed
+        String empresa = jComboBoxEmpresaC6.getSelectedItem().toString();
+        String ciclo = jComboBoxCicloC6.getSelectedItem().toString();
+        String curso = jComboBoxCursoC6.getSelectedItem().toString();
+        String cursoEscolar = jComboBoxCursoEscolarC6.getSelectedItem().toString();
+        
+        List<String> resultados = llamarFuncionC6(empresa, ciclo, curso, cursoEscolar);
+        actualizarTextPaneC6(resultados);
+    }//GEN-LAST:event_jButtonC6ActionPerformed
 
-    private void jComboBoxCursoEscolarC5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxCursoEscolarC5ActionPerformed
+    private void jComboBoxCursoEscolarC6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxCursoEscolarC6ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBoxCursoEscolarC5ActionPerformed
+    }//GEN-LAST:event_jComboBoxCursoEscolarC6ActionPerformed
+
+    private void jComboBoxEmpresaC6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxEmpresaC6ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBoxEmpresaC6ActionPerformed
+
+    private void jComboBoxCicloC6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxCicloC6ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBoxCicloC6ActionPerformed
     
 
     
@@ -655,17 +836,17 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButtonC3;
     private javax.swing.JButton jButtonC4;
-    private javax.swing.JButton jButtonC5;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
-    private javax.swing.JComboBox<String> jComboBox3;
-    private javax.swing.JComboBox<String> jComboBox4;
+    private javax.swing.JButton jButtonC6;
     private javax.swing.JComboBox<String> jComboBoxCiclo;
+    private javax.swing.JComboBox<String> jComboBoxCicloC6;
     private javax.swing.JComboBox<String> jComboBoxCurso;
-    private javax.swing.JComboBox<String> jComboBoxCursoEscolar;
+    private javax.swing.JComboBox<String> jComboBoxCursoC6;
+    private javax.swing.JComboBox<String> jComboBoxCursoEscolarC2;
     private javax.swing.JComboBox<String> jComboBoxCursoEscolarC3;
     private javax.swing.JComboBox<String> jComboBoxCursoEscolarC4;
-    private javax.swing.JComboBox<String> jComboBoxCursoEscolarC5;
+    private javax.swing.JComboBox<String> jComboBoxCursoEscolarC6;
+    private javax.swing.JComboBox<String> jComboBoxEmpresaC4;
+    private javax.swing.JComboBox<String> jComboBoxEmpresaC6;
     private javax.swing.JComboBox<String> jComboBoxGrupoC3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -690,7 +871,8 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
     private javax.swing.JTextPane jTextPane1;
     private javax.swing.JTextPane jTextPaneC3;
     private javax.swing.JTextPane jTextPaneC4;
-    private javax.swing.JTextPane jTextPaneC5;
+    private javax.swing.JTextPane jTextPaneC6;
     // End of variables declaration//GEN-END:variables
 }
+
 

@@ -34,7 +34,7 @@ public class ConfigDialogIncidence extends javax.swing.JDialog {
     }
     
     private List<String> llamarFuncionC5(String cursoEscolar) {
-    String query = "SELECT * FROM c5(?)";
+    String query = "SELECT * FROM c5(?) order by c5.num_incidencia";
     List<String> resultados = new ArrayList<>();
 
     try (Connection con = DatabaseConnection.getConnection();

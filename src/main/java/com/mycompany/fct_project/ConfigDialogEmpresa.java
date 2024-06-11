@@ -4,23 +4,25 @@
  */
 package com.mycompany.fct_project;
 
+import com.mycompany.fct_project.DatabaseConnection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JComboBox;
 
 /**
  *
  * @author AdminLluna
  */
 public class ConfigDialogEmpresa extends javax.swing.JDialog {
-    
-
 
     /**
      * Creates new form ConfigDialogStart
@@ -28,39 +30,77 @@ public class ConfigDialogEmpresa extends javax.swing.JDialog {
     public ConfigDialogEmpresa(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        
-        // Agregar evento al botón
-        jButton1.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
         pack();
         
-        
-        
+        poblarComboBoxEmpresa();
+        poblarComboBoxTecnologia();
     }
-   
-  /**
-   * FUNCION C2 
-   */
-    private List<String> llamarFuncionC2(String ciclo, String curso, String cursoEscolar) {
-        String query = "SELECT * FROM c2(?, ?, ?)";
+    
+    private void poblarComboBoxEmpresa() {
+        String query = "SELECT DISTINCT nombre FROM EMPRESA";
+        try (Connection con = DatabaseConnection.getConnection();
+             Statement stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            while (rs.next()) {
+                jComboBoxEmpresaC1.addItem(rs.getString("nombre"));
+                jComboBoxEmpresaC8.addItem(rs.getString("nombre"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private void poblarComboBoxTecnologia() {
+        String query = "SELECT DISTINCT descripcion FROM TECNOLOGIA";
+        try (Connection con = DatabaseConnection.getConnection();
+             Statement stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            while (rs.next()) {
+                jComboBoxEmpresaC7.addItem(rs.getString("descripcion"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+   * FUNCION C1 ----------------------------
+   **/
+     
+    private List<String> llamarFuncionC1(String empresaNombre) {
+        String query = "SELECT * FROM c1(?)";
         List<String> resultados = new ArrayList<>();
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement stmt = con.prepareStatement(query)) {
 
-            stmt.setString(1, ciclo);
-            stmt.setString(2, curso);
-            stmt.setString(3, cursoEscolar);
+            stmt.setString(1, empresaNombre);
 
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                String empresaNombre = rs.getString("empresa_nombre");
-                int numPracticas = rs.getInt("num_practicas");
-                resultados.add("Empresa: " + empresaNombre + ", Número de prácticas: " + numPracticas);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    String idEmpresa = rs.getString("idempresa");
+                    String nombreEmpresa = rs.getString("nombre_empresa");
+                    String nombreSector = rs.getString("nombre_sector");
+                    String tutorNombre = rs.getString("tutor_responsable_nombre");
+                    String tutorApellidos = rs.getString("tutor_responsable_apellidos");
+                    String contactoNombre = rs.getString("contacto_nombre");
+                    String contactoApellidos = rs.getString("contacto_apellidos");
+                    String contactoTelefono = rs.getString("contacto_telefono");
+                    String contactoCargo = rs.getString("contacto_cargo");
+
+                    StringBuilder resultado = new StringBuilder();
+                    resultado.append("Empresa Id: ").append(idEmpresa).append("\n")
+                            .append("Nombre Empresa: ").append(nombreEmpresa).append("\n")
+                            .append("Nombre Sector: ").append(nombreSector).append("\n").append("\n")
+                            .append("Tutor: ").append(tutorNombre).append(" ").append(tutorApellidos).append("\n").append("\n")
+                            .append("Contacto: ").append(contactoNombre).append(" ").append(contactoApellidos).append("\n")
+                            .append("Teléfono: ").append(contactoTelefono).append("\n")
+                            .append("Cargo: ").append(contactoCargo);
+
+                    resultados.add(resultado.toString());
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -69,38 +109,40 @@ public class ConfigDialogEmpresa extends javax.swing.JDialog {
     }
 
 
-    private void actualizarTextPaneC2(List<String> resultados) {
+    private void actualizarTextPaneC1(List<String> resultados) {
         StringBuilder sb = new StringBuilder();
         for (String resultado : resultados) {
             sb.append(resultado).append("\n");
         }
-        jTextPane1.setText(sb.toString());
+        jTextPaneC1.setText(sb.toString());
     }
     
-    
-    private List<String> llamarFuncionC3(String grupo, String cursoEscolar) {
-        String query = "SELECT * FROM c3(?, ?)";
+    /**
+   * FUNCION C7 ----------------------------
+   **/
+     
+    private List<String> llamarFuncionC7(String tecnologiaDescripcion) {
+        String query = "SELECT * FROM c7(?)";
         List<String> resultados = new ArrayList<>();
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement stmt = con.prepareStatement(query)) {
 
-            stmt.setString(1, grupo);
-            stmt.setString(2, cursoEscolar);
+            stmt.setString(1, tecnologiaDescripcion);
 
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                int profesorId = rs.getInt("profesor_id");
-                String profesorNombre = rs.getString("profesor_nombre");
-                String profesorApellidos = rs.getString("profesor_apellidos");
-                String empresaNombre = rs.getString("empresa_nombre");
-                int numPracticas = rs.getInt("num_practicas");
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    String idEmpresa = rs.getString("idempresa");
+                    String nombreEmpresa = rs.getString("empresa_nombre");
+                    String nombreSector = rs.getString("sector_descripcion");
 
-                resultados.add("Profesor ID: " + profesorId 
-                             + ", Nombre: " + profesorNombre 
-                             + " " + profesorApellidos 
-                             + ", Empresa: " + empresaNombre 
-                             + ", Número de prácticas: " + numPracticas);
+                    StringBuilder resultado = new StringBuilder();
+                    resultado.append("Nombre Empresa: ").append(nombreEmpresa).append("\n")
+                            .append("ID Empresa: ").append(idEmpresa).append("\n")
+                            .append("Sector: ").append(nombreSector).append("\n");
+
+                    resultados.add(resultado.toString());
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -108,17 +150,56 @@ public class ConfigDialogEmpresa extends javax.swing.JDialog {
         return resultados;
     }
 
-    private void actualizarTextPaneC3(List<String> resultados) {
+
+    private void actualizarTextPaneC7(List<String> resultados) {
         StringBuilder sb = new StringBuilder();
         for (String resultado : resultados) {
             sb.append(resultado).append("\n");
         }
-        jTextPaneC3.setText(sb.toString());
+        jTextPaneC7.setText(sb.toString());
     }
-   
 
-    
-    
+    /**
+   * FUNCION C7 ----------------------------
+   **/
+     
+    private List<String> llamarFuncionC8(String empresaNombre) {
+        String query = "SELECT * FROM c8(?)"; 
+        List<String> resultados = new ArrayList<>();
+
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement stmt = con.prepareStatement(query)) {
+
+            stmt.setString(1, empresaNombre);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    String profesorNombre = rs.getString("profesor_nombre"); 
+                    String profesorApellido = rs.getString("profesor_apellido");
+                    Date fechaContacto = rs.getDate("fechacontacto");
+                    String observaciones = rs.getString("observaciones");
+
+                    StringBuilder resultado = new StringBuilder();
+                    resultado.append("Profesor: ").append(profesorNombre).append(" ").append(profesorApellido).append("\n")
+                            .append("Fecha de contacto: ").append(fechaContacto).append("\n")
+                            .append("Observaciones: ").append(observaciones).append("\n");
+
+                    resultados.add(resultado.toString());
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return resultados;
+    }
+
+    private void actualizarTextPaneC8(List<String> resultados) {
+        StringBuilder sb = new StringBuilder();
+        for (String resultado : resultados) {
+            sb.append(resultado).append("\n");
+        }
+        jTextPaneC8.setText(sb.toString());
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -131,25 +212,23 @@ public class ConfigDialogEmpresa extends javax.swing.JDialog {
 
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jComboBoxCiclo = new javax.swing.JComboBox<>();
-        jLabel2 = new javax.swing.JLabel();
-        jComboBoxCurso = new javax.swing.JComboBox<>();
         jLabel3 = new javax.swing.JLabel();
-        jComboBoxCursoEscolar = new javax.swing.JComboBox<>();
-        jButton1 = new javax.swing.JButton();
+        jComboBoxEmpresaC1 = new javax.swing.JComboBox<>();
+        jButtonC1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextPane1 = new javax.swing.JTextPane();
+        jTextPaneC1 = new javax.swing.JTextPane();
         jPanel2 = new javax.swing.JPanel();
-        jComboBoxCursoEscolarC3 = new javax.swing.JComboBox<>();
-        jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jComboBoxGrupoC3 = new javax.swing.JComboBox<>();
+        jComboBoxEmpresaC7 = new javax.swing.JComboBox<>();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTextPaneC3 = new javax.swing.JTextPane();
-        jButtonC3 = new javax.swing.JButton();
+        jTextPaneC7 = new javax.swing.JTextPane();
+        jButtonC7 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
-        jPanel4 = new javax.swing.JPanel();
+        jLabel7 = new javax.swing.JLabel();
+        jComboBoxEmpresaC8 = new javax.swing.JComboBox<>();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTextPaneC8 = new javax.swing.JTextPane();
+        jButtonC8 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(new java.awt.Color(190, 228, 255));
@@ -158,134 +237,82 @@ public class ConfigDialogEmpresa extends javax.swing.JDialog {
 
         jPanel1.setBackground(new java.awt.Color(217, 239, 255));
 
-        jLabel1.setText("CICLO: ");
+        jLabel3.setText("EMPRESA");
 
-        jComboBoxCiclo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SMX", "DAW", "DAM", "ASIX" }));
-        jComboBoxCiclo.addActionListener(new java.awt.event.ActionListener() {
+        jComboBoxEmpresaC1.setSelectedItem(2);
+        jComboBoxEmpresaC1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBoxCicloActionPerformed(evt);
+                jComboBoxEmpresaC1ActionPerformed(evt);
             }
         });
 
-        jLabel2.setText("CURSO:");
-
-        jComboBoxCurso.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1º", "2º" }));
-        jComboBoxCurso.addActionListener(new java.awt.event.ActionListener() {
+        jButtonC1.setBackground(new java.awt.Color(239, 248, 255));
+        jButtonC1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jButtonC1.setText("Consult");
+        jButtonC1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(168, 184, 217), new java.awt.Color(168, 184, 217), java.awt.Color.gray, java.awt.Color.gray));
+        jButtonC1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBoxCursoActionPerformed(evt);
+                jButtonC1ActionPerformed(evt);
             }
         });
 
-        jLabel3.setText("CURSO ESCOLAR:");
-
-        jComboBoxCursoEscolar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2022-2023", "2023-2024", "2024-2025", "2025-2026" }));
-        jComboBoxCursoEscolar.setSelectedIndex(1);
-        jComboBoxCursoEscolar.setSelectedItem(2);
-        jComboBoxCursoEscolar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBoxCursoEscolarActionPerformed(evt);
-            }
-        });
-
-        jButton1.setBackground(new java.awt.Color(239, 248, 255));
-        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButton1.setText("Consult");
-        jButton1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(168, 184, 217), new java.awt.Color(168, 184, 217), java.awt.Color.gray, java.awt.Color.gray));
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        jScrollPane1.setViewportView(jTextPane1);
+        jTextPaneC1.setEditable(false);
+        jScrollPane1.setViewportView(jTextPaneC1);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(22, 22, 22)
+                .addGap(19, 19, 19)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(26, 26, 26)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jComboBoxEmpresaC1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addGap(18, 18, 18)
-                                .addComponent(jComboBoxCurso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(18, 18, 18)
-                                .addComponent(jComboBoxCiclo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(0, 149, Short.MAX_VALUE)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jComboBoxCursoEscolar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(38, 38, 38))
+                        .addComponent(jButtonC1, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 342, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(24, 24, 24))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(17, 17, 17)
+                .addContainerGap(23, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jComboBoxCursoEscolar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(26, 26, 26)
+                    .addComponent(jComboBoxEmpresaC1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jComboBoxCiclo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jComboBoxCurso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2)))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(23, 23, 23)
-                .addComponent(jButton1)
-                .addContainerGap(24, Short.MAX_VALUE))
+                    .addComponent(jButtonC1)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(25, 25, 25))
         );
 
-        jTabbedPane1.addTab("Practicas", jPanel1);
+        jTabbedPane1.addTab("Ver Empresas", jPanel1);
 
         jPanel2.setBackground(new java.awt.Color(217, 239, 255));
 
-        jComboBoxCursoEscolarC3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2022-2023", "2023-2024", "2024-2025", "2025-2026" }));
-        jComboBoxCursoEscolarC3.setSelectedIndex(1);
-        jComboBoxCursoEscolarC3.setSelectedItem(2);
-        jComboBoxCursoEscolarC3.addActionListener(new java.awt.event.ActionListener() {
+        jLabel5.setText("TECNOLOGIA:");
+
+        jComboBoxEmpresaC7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBoxCursoEscolarC3ActionPerformed(evt);
+                jComboBoxEmpresaC7ActionPerformed(evt);
             }
         });
 
-        jLabel4.setText("CURSO ESCOLAR:");
+        jTextPaneC7.setEditable(false);
+        jScrollPane2.setViewportView(jTextPaneC7);
 
-        jLabel5.setText("GRUPO:");
-
-        jComboBoxGrupoC3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1CFMG", "2CFMG", "1CFMX", "2CFMX", "1CFSJ", "2CFSJ", "1CFSK", "2CFSK", "1CFSL", "2CFSL", "1CFSF", "2CFSF", "1CFSY", "2CFSY", "1CFSG", "2CFSG", "1CFSH", "2CFSH" }));
-        jComboBoxGrupoC3.addActionListener(new java.awt.event.ActionListener() {
+        jButtonC7.setBackground(new java.awt.Color(239, 248, 255));
+        jButtonC7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jButtonC7.setText("Consult");
+        jButtonC7.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(168, 184, 217), new java.awt.Color(168, 184, 217), java.awt.Color.gray, java.awt.Color.gray));
+        jButtonC7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBoxGrupoC3ActionPerformed(evt);
-            }
-        });
-
-        jScrollPane2.setViewportView(jTextPaneC3);
-
-        jButtonC3.setBackground(new java.awt.Color(239, 248, 255));
-        jButtonC3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButtonC3.setText("Consult");
-        jButtonC3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(168, 184, 217), new java.awt.Color(168, 184, 217), java.awt.Color.gray, java.awt.Color.gray));
-        jButtonC3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonC3ActionPerformed(evt);
+                jButtonC7ActionPerformed(evt);
             }
         });
 
@@ -294,78 +321,95 @@ public class ConfigDialogEmpresa extends javax.swing.JDialog {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jComboBoxEmpresaC7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(34, 34, 34)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 406, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addGap(18, 18, 18)
-                                .addComponent(jComboBoxGrupoC3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(142, 142, 142)
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBoxCursoEscolarC3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(199, 199, 199)
-                        .addComponent(jButtonC3, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(43, Short.MAX_VALUE))
+                        .addGap(6, 6, 6)
+                        .addComponent(jButtonC7, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(15, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(17, 17, 17)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(jComboBoxCursoEscolarC3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(jComboBoxGrupoC3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
-                .addComponent(jButtonC3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12))
+                .addGap(19, 19, 19)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(jComboBoxEmpresaC7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButtonC7))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(32, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Grupos", jPanel2);
+        jTabbedPane1.addTab("Tecnologias", jPanel2);
+
+        jPanel3.setBackground(new java.awt.Color(217, 239, 255));
+
+        jLabel7.setText("EMPRESA:");
+
+        jComboBoxEmpresaC8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBoxEmpresaC8ActionPerformed(evt);
+            }
+        });
+
+        jTextPaneC8.setEditable(false);
+        jScrollPane3.setViewportView(jTextPaneC8);
+
+        jButtonC8.setBackground(new java.awt.Color(239, 248, 255));
+        jButtonC8.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jButtonC8.setText("Consult");
+        jButtonC8.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(168, 184, 217), new java.awt.Color(168, 184, 217), java.awt.Color.gray, java.awt.Color.gray));
+        jButtonC8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonC8ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 483, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(34, 34, 34)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 406, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(jButtonC8, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel3Layout.createSequentialGroup()
+                            .addComponent(jLabel7)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jComboBoxEmpresaC8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(43, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 233, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(24, 24, 24)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(jComboBoxEmpresaC8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonC8)
+                .addGap(27, 27, 27)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(33, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Empresas", jPanel3);
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 483, Short.MAX_VALUE)
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 233, Short.MAX_VALUE)
-        );
-
-        jTabbedPane1.addTab("Solicitudes", jPanel4);
+        jTabbedPane1.addTab("Historial", jPanel3);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 483, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 483, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -375,45 +419,43 @@ public class ConfigDialogEmpresa extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jComboBoxCicloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxCicloActionPerformed
+    private void jButtonC1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonC1ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBoxCicloActionPerformed
-
-    private void jComboBoxCursoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxCursoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBoxCursoActionPerformed
-
-    private void jComboBoxCursoEscolarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxCursoEscolarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBoxCursoEscolarActionPerformed
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-        String ciclo = jComboBoxCiclo.getSelectedItem().toString();
-        String curso = jComboBoxCurso.getSelectedItem().toString();
-        String cursoEscolar = jComboBoxCursoEscolar.getSelectedItem().toString();
+        String empresa = jComboBoxEmpresaC1.getSelectedItem().toString();
         
-        List<String> resultados = llamarFuncionC2(ciclo, curso, cursoEscolar);
-        actualizarTextPaneC2(resultados);
-    }//GEN-LAST:event_jButton1ActionPerformed
+        List<String> resultados = llamarFuncionC1(empresa);
+        actualizarTextPaneC1(resultados);
+    }//GEN-LAST:event_jButtonC1ActionPerformed
 
-    private void jComboBoxCursoEscolarC3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxCursoEscolarC3ActionPerformed
+    private void jComboBoxEmpresaC7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxEmpresaC7ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBoxCursoEscolarC3ActionPerformed
+    }//GEN-LAST:event_jComboBoxEmpresaC7ActionPerformed
 
-    private void jComboBoxGrupoC3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxGrupoC3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBoxGrupoC3ActionPerformed
-
-    private void jButtonC3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonC3ActionPerformed
-        // TODO add your handling code here:
-        String grupo = jComboBoxGrupoC3.getSelectedItem().toString();
-        String cursoEscolar = jComboBoxCursoEscolarC3.getSelectedItem().toString();
+    private void jButtonC7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonC7ActionPerformed
+        // TODO add your handling code here
+        String tecnologia = jComboBoxEmpresaC7.getSelectedItem().toString();
         
-        List<String> resultados = llamarFuncionC3(grupo, cursoEscolar);
-        actualizarTextPaneC3(resultados);
-    }//GEN-LAST:event_jButtonC3ActionPerformed
+        List<String> resultados = llamarFuncionC7(tecnologia);
+        actualizarTextPaneC7(resultados);
+    }//GEN-LAST:event_jButtonC7ActionPerformed
+
+    private void jComboBoxEmpresaC8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxEmpresaC8ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBoxEmpresaC8ActionPerformed
+
+    private void jButtonC8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonC8ActionPerformed
+        // TODO add your handling code here:
+        String historial = jComboBoxEmpresaC8.getSelectedItem().toString();
+        
+        List<String> resultados = llamarFuncionC8(historial);
+        actualizarTextPaneC8(resultados);
+    }//GEN-LAST:event_jButtonC8ActionPerformed
+
+    private void jComboBoxEmpresaC1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxEmpresaC1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBoxEmpresaC1ActionPerformed
     
+
 
     
     /**
@@ -466,27 +508,27 @@ public class ConfigDialogEmpresa extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButtonC3;
-    private javax.swing.JComboBox<String> jComboBoxCiclo;
-    private javax.swing.JComboBox<String> jComboBoxCurso;
-    private javax.swing.JComboBox<String> jComboBoxCursoEscolar;
-    private javax.swing.JComboBox<String> jComboBoxCursoEscolarC3;
-    private javax.swing.JComboBox<String> jComboBoxGrupoC3;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JButton jButtonC1;
+    private javax.swing.JButton jButtonC7;
+    private javax.swing.JButton jButtonC8;
+    private javax.swing.JComboBox<String> jComboBoxEmpresaC1;
+    private javax.swing.JComboBox<String> jComboBoxEmpresaC7;
+    private javax.swing.JComboBox<String> jComboBoxEmpresaC8;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTextPane jTextPane1;
-    private javax.swing.JTextPane jTextPaneC3;
+    private javax.swing.JTextPane jTextPaneC1;
+    private javax.swing.JTextPane jTextPaneC7;
+    private javax.swing.JTextPane jTextPaneC8;
     // End of variables declaration//GEN-END:variables
+
+    
 }
 

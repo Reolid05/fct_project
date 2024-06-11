@@ -149,8 +149,14 @@ public class ConfigDialogLogin extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        String url = jTextField2.getText();
         String user = jTextField1.getText();
-        String password = new String(jPasswordField1.getPassword());        
+        String password = new String(jPasswordField1.getPassword());  
+        
+        if (url.trim().isEmpty() || !url.equals("jdbc:postgresql://192.168.1.10:5432/DB_FCT")) {
+            JOptionPane.showMessageDialog(this, "URL field is empty or not correct.");            
+            return;
+        }
 
         if (DatabaseConnection.testConnection()) {
             UserAuthentication auth = new UserAuthentication();

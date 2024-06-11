@@ -21,6 +21,7 @@ public class ConfigDialogLogin extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         jTextField2.setText("jdbc:postgresql://192.168.1.10:5432/DB_FCT");
+        setLocationRelativeTo(null);
     }
 
     /**

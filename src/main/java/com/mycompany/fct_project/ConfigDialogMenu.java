@@ -16,6 +16,7 @@ public class ConfigDialogMenu extends javax.swing.JDialog {
     public ConfigDialogMenu(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     /**
@@ -109,10 +110,9 @@ public class ConfigDialogMenu extends javax.swing.JDialog {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        JFrameConsult consult = new JFrameConsult();
+        this.setVisible(false);
+        ConfigDialogConsult consult = new ConfigDialogConsult(null, true);
         consult.setVisible(true);
-        // Cerrar el JDialog actual
-        this.dispose();
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed

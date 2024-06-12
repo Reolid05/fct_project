@@ -129,8 +129,15 @@ public class ConfigDialogGestionTutorFCT extends javax.swing.JDialog {
     
     
     private void agregarRegistro() {
-        RealizanFCTTableModel model = (RealizanFCTTableModel) jTableRealizanFCT.getModel();
-        model.addRow(new Object[]{"", nombreGrupo, "", "", 0}); // Añadir una fila vacía para edición
+     RealizanFCTTableModel model = (RealizanFCTTableModel) jTableRealizanFCT.getModel();
+     Object[] newRowData = new Object[5];
+     newRowData[0] = ""; // ID Empresa
+     newRowData[1] = nombreGrupo; // Nombre del grupo (no editable)
+     newRowData[2] = ""; // Curso Escolar
+     newRowData[3] = ""; // Periodo
+     newRowData[4] = 0; // Número de Alumnos
+
+     model.addRow(newRowData); // Añadir una fila vacía para edición
     }
 
     // Acción del botón "Guardar" para añadir registro
@@ -168,16 +175,16 @@ public class ConfigDialogGestionTutorFCT extends javax.swing.JDialog {
         String periodo = model.getValueAt(row, 3).toString();
         int numAlumnos = Integer.parseInt(model.getValueAt(row, 4).toString());
 
-        String query = "UPDATE REALIZAN_FCT SET periodo = ?, num_alu_asignados = ? WHERE idempresa = ? AND idgrupo = ? AND cursoescolar = ?";
+        String query = "UPDATE REALIZAN_FCT SET periodo = ?, num_alu_asignados = ? WHERE idempresa = ? AND nombregrupo = ? AND cursoescolar = ?";
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement stmt = con.prepareStatement(query)) {
 
-            stmt.setInt(1, numAlumnos);
-            stmt.setString(2, idEmpresa);
-            stmt.setString(3, nombreGrupo);
-            stmt.setString(4, cursoEscolar);
-            stmt.setString(5, periodo);
+            stmt.setInt(2, numAlumnos);
+            stmt.setString(3, idEmpresa);
+            stmt.setString(4, nombreGrupo);
+            stmt.setString(5, cursoEscolar);
+            stmt.setString(1, periodo);
 
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -225,9 +232,14 @@ public class ConfigDialogGestionTutorFCT extends javax.swing.JDialog {
 
         @Override
         public boolean isCellEditable(int row, int column) {
-            // Permitir la edición solo en las columnas "Periodo" y "Número de Alumnos"
+        // Permitir la edición en todas las columnas si es una nueva fila
+        if (row == getRowCount() - 1) {
+            return true;
+        } else {
+            // Permitir la edición solo en las columnas "Periodo" y "Número de Alumnos" en filas existentes
             return column == 3 || column == 4;
         }
+}
 
         @Override
         public Class<?> getColumnClass(int columnIndex) {

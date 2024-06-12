@@ -28,7 +28,7 @@ public class ConfigDialogIncidence extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         setLocationRelativeTo(null);
-        
+        setResizable(false);
         poblarComboBoxCursoEscolarC5();
     }
     

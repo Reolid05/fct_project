@@ -29,6 +29,7 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
     public ConfigDialogFCT(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        setResizable(false);
         setLocationRelativeTo(null);
         
         // Agregar evento al botón

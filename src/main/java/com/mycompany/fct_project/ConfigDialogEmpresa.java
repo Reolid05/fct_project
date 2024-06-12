@@ -32,7 +32,7 @@ public class ConfigDialogEmpresa extends javax.swing.JDialog {
         initComponents();
         setLocationRelativeTo(null);
         pack();
-        
+        setResizable(false);
         poblarComboBoxEmpresa();
         poblarComboBoxTecnologia();
     }

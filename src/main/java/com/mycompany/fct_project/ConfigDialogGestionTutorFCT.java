@@ -30,7 +30,7 @@ public class ConfigDialogGestionTutorFCT extends javax.swing.JDialog {
     public ConfigDialogGestionTutorFCT(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        
+        setResizable(false);
         obtenerNombreGrupo();
                 
 

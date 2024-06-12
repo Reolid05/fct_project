@@ -50,8 +50,8 @@
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="A&#xf1;adir FCT">
-                <Property name="tabTitle" type="java.lang.String" value="A&#xf1;adir FCT"/>
+              <JTabbedPaneConstraints tabName="A&#xf1;adir Empresa">
+                <Property name="tabTitle" type="java.lang.String" value="A&#xf1;adir Empresa"/>
               </JTabbedPaneConstraints>
             </Constraint>
           </Constraints>

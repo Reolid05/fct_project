@@ -23,9 +23,7 @@ import javax.swing.table.DefaultTableModel;
 public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
 
     private HashMap<String, Integer> sectorMap;
-    /**
-     * Creates new form ConfigDialogGestionTutorFCT
-     */
+
     public ConfigDialogGestionAdministrador(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
@@ -34,10 +32,9 @@ public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
         setFieldsEditable(false);
         cargarSectores();
     }
-    
+
     private void cargarSectores() {
         sectorMap = new HashMap<>();
-        // Esto debe ser remplazado con la carga real desde la base de datos
         sectorMap.put("Sistemas Microinformáticos y Redes", 1);
         sectorMap.put("Desarrollo de Aplicaciones Web", 2);
         sectorMap.put("Desarrollo de Aplicaciones Multiplataforma", 3);
@@ -69,9 +66,16 @@ public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
 
         jButtonNew.addActionListener(evt -> nuevoRegistro());
         jButtonAdd.addActionListener(evt -> agregarRegistro());
-        jButtonModify.addActionListener(evt -> setFieldsEditable(true));
+        jButtonModify.addActionListener(evt -> {
+            setFieldsEditable(true);
+            jButtonSave.setEnabled(true);
+        });
+        jButtonSave.addActionListener(evt -> {
+            guardarCambios();
+            setFieldsEditable(false);
+            jButtonSave.setEnabled(false);
+        });
         jButtonDelete.addActionListener(evt -> eliminarRegistro());
-        jButtonSave.addActionListener(evt -> guardarCambios());
     }
 
     private void mostrarDatosSeleccionados() {
@@ -118,6 +122,10 @@ public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
         }
     }
 
+    private String getSectorFromComboBox() {
+        return jComboBoxSector.getSelectedItem().toString();
+    }
+
     private String getIdEmpresaSeleccionada() {
         int selectedRow = jTable1.getSelectedRow();
         if (selectedRow != -1) {
@@ -131,7 +139,7 @@ public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
         modificarRegistro();
     }
 
-    private void modificarRegistro() {
+    public void modificarRegistro() {
         String idempresa = getIdEmpresaSeleccionada();
 
         String nombre = jTextFieldNombre.getText();
@@ -145,7 +153,7 @@ public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
         }
 
         String query = "UPDATE EMPRESA SET nombre = ?, sector = ? WHERE idempresa = ?";
-        try (Connection conn = getConnection();
+        try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, nombre);
             pstmt.setInt(2, sectorId);
@@ -159,11 +167,13 @@ public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
     }
 
     private void eliminarRegistro() {
-        String idempresa = getIdEmpresaSeleccionada();
-        if (idempresa == null) {
+        int selectedRow = jTable1.getSelectedRow();
+        if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this, "Seleccione un registro para eliminar.", "Advertencia", JOptionPane.WARNING_MESSAGE);
             return;
         }
+
+        String idempresa = jTextFieldCIF.getText();
 
         String query = "DELETE FROM EMPRESA WHERE idempresa = ?";
         try (Connection con = DatabaseConnection.getConnection();
@@ -184,20 +194,23 @@ public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         model.setRowCount(0);
 
-        String query = "SELECT idempresa, nombre, sector FROM EMPRESA";
+        String query = "SELECT e.idempresa, e.nombre, s.descripcion FROM EMPRESA e JOIN SECTOR s ON e.sector = s.idsector";
         try (Connection con = DatabaseConnection.getConnection();
              Statement stmt = con.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
 
             while (rs.next()) {
-                String idempresa = rs.getString("idempresa");
-                String nombre = rs.getString("nombre");
-                String sector = rs.getString("sector");
-                model.addRow(new Object[]{idempresa, nombre, sector});
+                try {
+                    String idempresa = rs.getString("idempresa");
+                    String nombre = rs.getString("nombre");
+                    String sector = rs.getString("descripcion");
+                    model.addRow(new Object[]{idempresa, nombre, sector});
+                } catch (SQLException e) {
+                    System.err.println("Error processing row: " + e.getMessage());
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error al cargar los datos de la tabla: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
     
@@ -418,7 +431,7 @@ public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
                 .addContainerGap(14, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Añadir FCT", jPanel1);
+        jTabbedPane1.addTab("Añadir Empresa", jPanel1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

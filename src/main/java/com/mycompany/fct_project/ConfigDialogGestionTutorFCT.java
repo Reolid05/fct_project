@@ -4,86 +4,237 @@
  */
 package com.mycompany.fct_project;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author AdminAlex
  */
 public class ConfigDialogGestionTutorFCT extends javax.swing.JDialog {
+    
+    public int profesorId;
+    private String nombreGrupo;
 
     /**
      * Creates new form ConfigDialogGestionTutorFCT
      */
+    
+
     public ConfigDialogGestionTutorFCT(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         
-        poblarComboBoxGrupo();
-        poblarComboBoxEmpresa();
-        poblarComboBoxCursoEscolar();
-        poblarComboBoxPeriodo();
+        obtenerNombreGrupo();
+                
+
+        // Configurar tabla
+        jTableRealizanFCT.setModel(new RealizanFCTTableModel());
+        
+        // Configurar botones
+        jButtonAgregar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                agregarRegistro();
+            }
+        });
+
+        jButtonGuardar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                int row = jTableRealizanFCT.getSelectedRow();
+                if (row >= 0) {
+                    guardarRegistro(row);
+                }
+            }
+        });
+
+        jButtonActualizar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                int row = jTableRealizanFCT.getSelectedRow();
+                if (row >= 0) {
+                    actualizarRegistro(row);
+                }
+            }
+        });
+
+        jButtonBorrar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                int row = jTableRealizanFCT.getSelectedRow();
+                if (row >= 0) {
+                    borrarRegistro(row);
+                }
+            }
+        });
+
+        pack();
+        setLocationRelativeTo(null); // Centrar el diálogo
     }
-
-    private void poblarComboBoxGrupo() {
-        String query = "SELECT DISTINCT nombreGrupo FROM GRUPO";
+    
+     public void setProfesorId(int profesorId) {
+        this.profesorId = profesorId;
+        obtenerNombreGrupo(); // Cargar el nombre del grupo después de establecer el profesorId
+        cargarDatosTabla(); // Cargar los datos de la tabla después de establecer el profesorId
+    }
+     
+    private void obtenerNombreGrupo() {
+        String query = "SELECT nombreGrupo FROM grupo WHERE idprofe = ?";
         try (Connection con = DatabaseConnection.getConnection();
-             Statement stmt = con.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
+             PreparedStatement stmt = con.prepareStatement(query)) {
+             
+            stmt.setInt(1, profesorId);
+            ResultSet rs = stmt.executeQuery();
 
-            while (rs.next()) {
-                jComboBoxGrupo.addItem(rs.getString("nombreGrupo"));
+            if (rs.next()) {
+                this.nombreGrupo = rs.getString("nombreGrupo");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-    
-    private void poblarComboBoxEmpresa() {
-        String query = "SELECT DISTINCT nombre FROM EMPRESA";
+
+     private void cargarDatosTabla() {
+        RealizanFCTTableModel model = new RealizanFCTTableModel();
+
+        String query = "SELECT idempresa, nombregrupo, cursoescolar, periodo, num_alu_asignados FROM REALIZAN_FCT WHERE nombregrupo = ?";
         try (Connection con = DatabaseConnection.getConnection();
-             Statement stmt = con.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
+             PreparedStatement stmt = con.prepareStatement(query)) {
+             
+            stmt.setString(1, nombreGrupo);
+            ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                jComboBoxEmpresa.addItem(rs.getString("nombre"));
-                jComboBoxEmpresa.addItem(rs.getString("nombre"));
+                String idEmpresa = rs.getString("idempresa");
+                String nombreGrupo = rs.getString("nombregrupo");
+                String cursoEscolar = rs.getString("cursoescolar");
+                String periodo = rs.getString("periodo");
+                int numAlumnos = rs.getInt("num_alu_asignados");
+
+                model.addRow(new Object[]{idEmpresa, nombreGrupo, cursoEscolar, periodo, numAlumnos});
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        jTableRealizanFCT.setModel(model);
+    }
+    
+    
+    private void agregarRegistro() {
+        RealizanFCTTableModel model = (RealizanFCTTableModel) jTableRealizanFCT.getModel();
+        model.addRow(new Object[]{"", nombreGrupo, "", "", 0}); // Añadir una fila vacía para edición
+    }
+
+    // Acción del botón "Guardar" para añadir registro
+    private void guardarRegistro(int row) {
+        RealizanFCTTableModel model = (RealizanFCTTableModel) jTableRealizanFCT.getModel();
+        String idEmpresa = model.getValueAt(row, 0).toString();
+        String nombreGrupo = model.getValueAt(row, 1).toString();
+        String cursoEscolar = model.getValueAt(row, 2).toString();
+        String periodo = model.getValueAt(row, 3).toString();
+        int numAlumnos = Integer.parseInt(model.getValueAt(row, 4).toString());
+
+        String query = "INSERT INTO REALIZAN_FCT (idempresa, nombregrupo, cursoescolar, periodo, num_alu_asignados) VALUES (?, ?, ?, ?, ?)";
+
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement stmt = con.prepareStatement(query)) {
+
+            stmt.setString(1, idEmpresa);
+            stmt.setString(2, nombreGrupo);
+            stmt.setString(3, cursoEscolar);
+            stmt.setString(4, periodo);
+            stmt.setInt(5, numAlumnos);
+
+            stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
     
-    private void poblarComboBoxCursoEscolar() {
-        String query = "SELECT DISTINCT cursoescolar FROM realizan_fct";
-        try (Connection con = DatabaseConnection.getConnection();
-             Statement stmt = con.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
+    // Acción del botón "Actualizar" para guardar cambios
+    private void actualizarRegistro(int row) {
+        RealizanFCTTableModel model = (RealizanFCTTableModel) jTableRealizanFCT.getModel();
+        String idEmpresa = model.getValueAt(row, 0).toString();
+        String nombreGrupo = model.getValueAt(row, 1).toString();
+        String cursoEscolar = model.getValueAt(row, 2).toString();
+        String periodo = model.getValueAt(row, 3).toString();
+        int numAlumnos = Integer.parseInt(model.getValueAt(row, 4).toString());
 
-            while (rs.next()) {
-                jComboBoxCursoEscolar.addItem(rs.getString("cursoescolar"));
-            }
+        String query = "UPDATE REALIZAN_FCT SET periodo = ?, num_alu_asignados = ? WHERE idempresa = ? AND idgrupo = ? AND cursoescolar = ?";
+
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement stmt = con.prepareStatement(query)) {
+
+            stmt.setInt(1, numAlumnos);
+            stmt.setString(2, idEmpresa);
+            stmt.setString(3, nombreGrupo);
+            stmt.setString(4, cursoEscolar);
+            stmt.setString(5, periodo);
+
+            stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
     
-    private void poblarComboBoxPeriodo() {
-        String query = "SELECT DISTINCT periodo FROM realizan_fct";
-        try (Connection con = DatabaseConnection.getConnection();
-              Statement stmt = con.createStatement();
-              ResultSet rs = stmt.executeQuery(query)) {
+    // Acción del botón "Borrar" para eliminar registro
+    private void borrarRegistro(int row) {
+        RealizanFCTTableModel model = (RealizanFCTTableModel) jTableRealizanFCT.getModel();
+        String idEmpresa = model.getValueAt(row, 0).toString();
+        String nombreGrupo = model.getValueAt(row, 1).toString();
+        String cursoEscolar = model.getValueAt(row, 2).toString();
+        String periodo = model.getValueAt(row, 3).toString();
 
-             while (rs.next()) {
-                 jComboBoxPeriodo.addItem(rs.getString("periodo"));
-             }
-         } catch (SQLException e) {
-             e.printStackTrace();
-         }
+        String query = "DELETE FROM REALIZAN_FCT WHERE idempresa = ? AND nombregrupo = ? AND cursoescolar = ? AND periodo = ?";
+
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement stmt = con.prepareStatement(query)) {
+
+            stmt.setString(1, idEmpresa);
+            stmt.setString(2, nombreGrupo);
+            stmt.setString(3, cursoEscolar);
+            stmt.setString(4, periodo);
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        model.removeRow(row); // Eliminar la fila de la tabla
     }
+
+
+
+    
+    class RealizanFCTTableModel extends DefaultTableModel {
+        private final String[] columnNames = {"ID Empresa", "Nombre Grupo", "Curso Escolar", "Periodo", "Número de Alumnos"};
+        private final Class<?>[] columnTypes = {String.class, String.class, String.class, String.class, Integer.class};
+
+        public RealizanFCTTableModel() {
+            super();
+            setColumnIdentifiers(columnNames);
+        }
+
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            // Permitir la edición solo en las columnas "Periodo" y "Número de Alumnos"
+            return column == 3 || column == 4;
+        }
+
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            return columnTypes[columnIndex];
+        }
+    }
+
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -94,138 +245,81 @@ public class ConfigDialogGestionTutorFCT extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTabbedPane1 = new javax.swing.JTabbedPane();
-        jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jComboBoxGrupo = new javax.swing.JComboBox<>();
-        jLabel2 = new javax.swing.JLabel();
-        jComboBoxEmpresa = new javax.swing.JComboBox<>();
-        jLabel3 = new javax.swing.JLabel();
-        jTextFieldAlumnos = new javax.swing.JTextField();
-        jButtonG3Añadir = new javax.swing.JButton();
-        jLabel4 = new javax.swing.JLabel();
-        jComboBoxCursoEscolar = new javax.swing.JComboBox<>();
-        jLabel5 = new javax.swing.JLabel();
-        jComboBoxPeriodo = new javax.swing.JComboBox<>();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTableRealizanFCT = new javax.swing.JTable();
+        jToolBar1 = new javax.swing.JToolBar();
+        jButtonAgregar = new javax.swing.JButton();
+        jButtonGuardar = new javax.swing.JButton();
+        jButtonActualizar = new javax.swing.JButton();
+        jButtonBorrar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jTabbedPane1.setBackground(new java.awt.Color(190, 228, 255));
+        jTableRealizanFCT.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
 
-        jPanel1.setBackground(new java.awt.Color(217, 239, 255));
+            }
+        ));
+        jScrollPane2.setViewportView(jTableRealizanFCT);
 
-        jLabel1.setText("GRUPO:");
+        jToolBar1.setRollover(true);
 
-        jLabel2.setText("EMPRESA:");
+        jButtonAgregar.setText("Agregar");
+        jButtonAgregar.setFocusable(false);
+        jButtonAgregar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButtonAgregar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(jButtonAgregar);
 
-        jLabel3.setText("ALUMNOS:");
-
-        jButtonG3Añadir.setBackground(new java.awt.Color(239, 248, 255));
-        jButtonG3Añadir.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButtonG3Añadir.setText("Guardar");
-        jButtonG3Añadir.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(168, 184, 217), new java.awt.Color(168, 184, 217), java.awt.Color.gray, java.awt.Color.gray));
-        jButtonG3Añadir.addActionListener(new java.awt.event.ActionListener() {
+        jButtonGuardar.setText("Guardar");
+        jButtonGuardar.setFocusable(false);
+        jButtonGuardar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButtonGuardar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButtonGuardar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonG3AñadirActionPerformed(evt);
+                jButtonGuardarActionPerformed(evt);
             }
         });
+        jToolBar1.add(jButtonGuardar);
 
-        jLabel4.setText("CURSO ESCOLAR:");
+        jButtonActualizar.setText("Actualizar");
+        jButtonActualizar.setFocusable(false);
+        jButtonActualizar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButtonActualizar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(jButtonActualizar);
 
-        jComboBoxCursoEscolar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBoxCursoEscolarActionPerformed(evt);
-            }
-        });
-
-        jLabel5.setText("PERIODO:");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addGap(74, 74, 74)
-                                    .addComponent(jLabel2))
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                    .addContainerGap()
-                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING))))
-                            .addGap(55, 55, 55)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jComboBoxEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jComboBoxCursoEscolar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jComboBoxGrupo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jLabel5)
-                                .addComponent(jLabel3))
-                            .addGap(55, 55, 55)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jComboBoxPeriodo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jTextFieldAlumnos))))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(130, 130, 130)
-                        .addComponent(jButtonG3Añadir, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(73, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(30, 30, 30)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jComboBoxGrupo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(27, 27, 27)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jComboBoxEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(28, 28, 28)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBoxCursoEscolar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(24, 24, 24)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBoxPeriodo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextFieldAlumnos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3))
-                .addGap(34, 34, 34)
-                .addComponent(jButtonG3Añadir)
-                .addGap(22, 22, 22))
-        );
-
-        jTabbedPane1.addTab("Añadir FCT", jPanel1);
+        jButtonBorrar.setText("Borrar");
+        jButtonBorrar.setFocusable(false);
+        jButtonBorrar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButtonBorrar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(jButtonBorrar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 502, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButtonG3AñadirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonG3AñadirActionPerformed
+    private void jButtonGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGuardarActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButtonG3AñadirActionPerformed
-
-    private void jComboBoxCursoEscolarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxCursoEscolarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBoxCursoEscolarActionPerformed
+    }//GEN-LAST:event_jButtonGuardarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -255,8 +349,11 @@ public class ConfigDialogGestionTutorFCT extends javax.swing.JDialog {
         //</editor-fold>
 
         /* Create and display the dialog */
+
+        /* Crear y mostrar el diálogo */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
+                // Crear una instancia de ConfigDialogGestionTutorFCT con los argumentos requeridos
                 ConfigDialogGestionTutorFCT dialog = new ConfigDialogGestionTutorFCT(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
@@ -270,18 +367,12 @@ public class ConfigDialogGestionTutorFCT extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonG3Añadir;
-    private javax.swing.JComboBox<String> jComboBoxCursoEscolar;
-    private javax.swing.JComboBox<String> jComboBoxEmpresa;
-    private javax.swing.JComboBox<String> jComboBoxGrupo;
-    private javax.swing.JComboBox<String> jComboBoxPeriodo;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTextField jTextFieldAlumnos;
+    private javax.swing.JButton jButtonActualizar;
+    private javax.swing.JButton jButtonAgregar;
+    private javax.swing.JButton jButtonBorrar;
+    private javax.swing.JButton jButtonGuardar;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable jTableRealizanFCT;
+    private javax.swing.JToolBar jToolBar1;
     // End of variables declaration//GEN-END:variables
 }

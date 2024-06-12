@@ -10,6 +10,8 @@ package com.mycompany.fct_project;
  */
 public class ConfigDialogMenu extends javax.swing.JDialog {
 
+    private int profesorId;
+
     /**
      * Creates new form ConfigDialogStart
      */
@@ -17,6 +19,10 @@ public class ConfigDialogMenu extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         setLocationRelativeTo(null);
+    }
+    
+    public void setProfesorId(int profesorId) {
+        this.profesorId = profesorId;
     }
 
     /**
@@ -35,8 +41,11 @@ public class ConfigDialogMenu extends javax.swing.JDialog {
         jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setPreferredSize(null);
 
         jPanel1.setBackground(new java.awt.Color(190, 228, 255));
+        jPanel1.setEnabled(false);
+        jPanel1.setPreferredSize(new java.awt.Dimension(600, 400));
 
         jButton1.setBackground(new java.awt.Color(239, 248, 255));
         jButton1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -98,11 +107,11 @@ public class ConfigDialogMenu extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 358, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
         );
 
         pack();
@@ -117,6 +126,10 @@ public class ConfigDialogMenu extends javax.swing.JDialog {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        this.setVisible(false);
+        ConfigDialogGestionTutorFCT gestionDialog = new ConfigDialogGestionTutorFCT(null, true);
+        gestionDialog.setProfesorId(profesorId);
+        gestionDialog.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

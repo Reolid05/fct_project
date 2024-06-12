@@ -3,6 +3,7 @@ package com.mycompany.fct_project;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.JFrame;
 import javax.swing.JDialog;
@@ -14,6 +15,9 @@ import javax.swing.SwingUtilities;
  */
 public class ConfigDialogLogin extends javax.swing.JDialog {
 
+    private String nombreUsuario;
+    private int profesorId;
+
     /**
      * Creates new form ConfigDialog
      */
@@ -22,7 +26,36 @@ public class ConfigDialogLogin extends javax.swing.JDialog {
         initComponents();
         jTextField2.setText("jdbc:postgresql://192.168.1.10:5432/DB_FCT");
         setLocationRelativeTo(null);
+        this.profesorId = obtenerProfesorId(nombreUsuario); 
+
     }
+    
+     public int getProfesorId() {
+        return profesorId;
+    }
+
+    public String getNombreUsuario() {
+        return nombreUsuario;
+    }
+    
+     private int obtenerProfesorId(String nombreUsuario) {
+        String query = "SELECT id FROM USUARIOS WHERE username = ?";
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement stmt = con.prepareStatement(query)) {
+
+            stmt.setString(1, nombreUsuario);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1; // Retornar -1 si no se encuentra el profesor
+    }
+     
+     
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -150,6 +183,8 @@ public class ConfigDialogLogin extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        this.nombreUsuario = jTextField1.getText();
+        
         String url = jTextField2.getText();
         String user = jTextField1.getText();
         String password = new String(jPasswordField1.getPassword());  
@@ -164,10 +199,12 @@ public class ConfigDialogLogin extends javax.swing.JDialog {
             String role = auth.authenticateUser(user, password);
 
             if (role != null) {
+                this.profesorId = obtenerProfesorId(nombreUsuario);
                 JOptionPane.showMessageDialog(this, "Login successful! Role: " + role);
                 this.setVisible(false);
-                ConfigDialogMenu menu = new ConfigDialogMenu(null, true);
-                menu.setVisible(true);
+                ConfigDialogMenu menuDialog = new ConfigDialogMenu(null, true);
+                menuDialog.setProfesorId(profesorId); // Pasar el profesorId a través de un método
+                menuDialog.setVisible(true);
             } else {
                 JOptionPane.showMessageDialog(this, "Invalid credentials.");
             }

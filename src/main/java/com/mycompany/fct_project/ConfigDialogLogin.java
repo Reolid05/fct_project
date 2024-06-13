@@ -30,9 +30,16 @@ public class ConfigDialogLogin extends javax.swing.JDialog {
         setResizable(false);
         this.profesorId = obtenerProfesorId(nombreUsuario); 
 
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                System.exit(0);
+            }
+        });
     }
     
-     public int getProfesorId() {
+    public int getProfesorId() {
         return profesorId;
     }
 
@@ -44,7 +51,7 @@ public class ConfigDialogLogin extends javax.swing.JDialog {
         return role;
     }
     
-     private int obtenerProfesorId(String nombreUsuario) {
+    private int obtenerProfesorId(String nombreUsuario) {
         String query = "SELECT id FROM USUARIOS WHERE username = ?";
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement stmt = con.prepareStatement(query)) {
@@ -61,8 +68,6 @@ public class ConfigDialogLogin extends javax.swing.JDialog {
         return -1;
     }
      
-     
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

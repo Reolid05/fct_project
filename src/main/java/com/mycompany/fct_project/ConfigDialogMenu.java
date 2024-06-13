@@ -14,7 +14,6 @@ public class ConfigDialogMenu extends javax.swing.JDialog {
 
     private int profesorId;
     private String role;
-    private String local2;
 
     public ConfigDialogMenu(java.awt.Frame parent, boolean modal, String role) {
         super(parent, modal);
@@ -31,11 +30,6 @@ public class ConfigDialogMenu extends javax.swing.JDialog {
     public String getRole() {
         return role;
     }
-    
-    public void setLocal2(String value) {
-        this.local2 = value;
-    }
-
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -52,6 +46,7 @@ public class ConfigDialogMenu extends javax.swing.JDialog {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jButtonLogin = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setPreferredSize(null);
@@ -92,6 +87,9 @@ public class ConfigDialogMenu extends javax.swing.JDialog {
             }
         });
 
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
+        jLabel3.setText("New login:");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -105,7 +103,10 @@ public class ConfigDialogMenu extends javax.swing.JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(34, 34, 34)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButtonLogin)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonLogin))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jButtonConsult, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
@@ -124,7 +125,9 @@ public class ConfigDialogMenu extends javax.swing.JDialog {
                     .addComponent(jButtonManage, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonConsult, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(53, 53, 53)
-                .addComponent(jButtonLogin)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtonLogin)
+                    .addComponent(jLabel3))
                 .addGap(16, 16, 16))
         );
 
@@ -195,7 +198,7 @@ public class ConfigDialogMenu extends javax.swing.JDialog {
         login.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent e) {
-                ConfigDialogMenu.this.setVisible(true);
+                ConfigDialogMenu.this.setVisible(false);
             }
         });
     }//GEN-LAST:event_jButtonLoginActionPerformed
@@ -231,9 +234,8 @@ public class ConfigDialogMenu extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ConfigDialogLogin loginDialog = new ConfigDialogLogin(new javax.swing.JFrame(), true);
-                loginDialog.setVisible(true);
-
+                ConfigDialogLogin loginDialog = new ConfigDialogLogin(new javax.swing.JFrame(), false);
+                loginDialog.setVisible(false);
                 String role = loginDialog.getRole();
                 if (role != null) {
                     ConfigDialogMenu menuDialog = new ConfigDialogMenu(new javax.swing.JFrame(), true, role);
@@ -257,6 +259,7 @@ public class ConfigDialogMenu extends javax.swing.JDialog {
     private javax.swing.JButton jButtonManage;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 }

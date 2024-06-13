@@ -26,9 +26,21 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
     /**
      * Creates new form ConfigDialogStart
      */
-    public ConfigDialogFCT(java.awt.Frame parent, boolean modal) {
+    private String role;
+    private int profesorId;
+    
+    public void setProfesorId(int profesorId) {
+        this.profesorId = profesorId;
+    }
+
+    public int getProfesorId() {
+        return profesorId;
+    }
+    
+    public ConfigDialogFCT(java.awt.Frame parent, boolean modal, String role) {
         super(parent, modal);
         initComponents();
+        this.role = role;
         setResizable(false);
         setLocationRelativeTo(null);
         
@@ -378,7 +390,7 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
 
         jButton1.setBackground(new java.awt.Color(239, 248, 255));
         jButton1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButton1.setText("Consult");
+        jButton1.setText("Consultar");
         jButton1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(168, 184, 217), new java.awt.Color(168, 184, 217), java.awt.Color.gray, java.awt.Color.gray));
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -391,7 +403,7 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
 
         jButtonBack.setBackground(new java.awt.Color(239, 248, 255));
         jButtonBack.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButtonBack.setText("Back");
+        jButtonBack.setText("Retroceder");
         jButtonBack.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(168, 184, 217), new java.awt.Color(168, 184, 217), java.awt.Color.gray, java.awt.Color.gray));
         jButtonBack.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -418,20 +430,20 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
                                         .addComponent(jLabel1)
                                         .addGap(18, 18, 18)
                                         .addComponent(jComboBoxCiclo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 292, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 296, Short.MAX_VALUE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(26, 26, 26)
                                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButtonBack, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(jButtonBack))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 149, Short.MAX_VALUE)
+                        .addGap(0, 153, Short.MAX_VALUE)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jComboBoxCursoEscolarC2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(38, 38, 38))
+                .addGap(34, 34, 34))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -484,7 +496,7 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
 
         jButtonC3.setBackground(new java.awt.Color(239, 248, 255));
         jButtonC3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButtonC3.setText("Consult");
+        jButtonC3.setText("Consultar");
         jButtonC3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(168, 184, 217), new java.awt.Color(168, 184, 217), java.awt.Color.gray, java.awt.Color.gray));
         jButtonC3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -494,7 +506,7 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
 
         jButtonBack1.setBackground(new java.awt.Color(239, 248, 255));
         jButtonBack1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButtonBack1.setText("Back");
+        jButtonBack1.setText("Retroceder");
         jButtonBack1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(168, 184, 217), new java.awt.Color(168, 184, 217), java.awt.Color.gray, java.awt.Color.gray));
         jButtonBack1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -518,14 +530,15 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
                         .addComponent(jButtonC3, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(34, 34, 34)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jButtonBack1, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 406, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(jPanel2Layout.createSequentialGroup()
-                                    .addComponent(jLabel5)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(jComboBoxGrupoC3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 406, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addGap(18, 18, 18)
+                                .addComponent(jComboBoxGrupoC3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jButtonBack1)))
                 .addContainerGap(43, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -570,7 +583,7 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
 
         jButtonC4.setBackground(new java.awt.Color(239, 248, 255));
         jButtonC4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButtonC4.setText("Consult");
+        jButtonC4.setText("Consultar");
         jButtonC4.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(168, 184, 217), new java.awt.Color(168, 184, 217), java.awt.Color.gray, java.awt.Color.gray));
         jButtonC4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -583,7 +596,7 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
 
         jButtonBack2.setBackground(new java.awt.Color(239, 248, 255));
         jButtonBack2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButtonBack2.setText("Back");
+        jButtonBack2.setText("Retroceder");
         jButtonBack2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(168, 184, 217), new java.awt.Color(168, 184, 217), java.awt.Color.gray, java.awt.Color.gray));
         jButtonBack2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -607,14 +620,15 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
                         .addComponent(jButtonC4, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(37, 37, 37)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jButtonBack2, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 406, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(jPanel3Layout.createSequentialGroup()
-                                    .addComponent(jLabel6)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(jComboBoxEmpresaC4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 406, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel6)
+                                .addGap(18, 18, 18)
+                                .addComponent(jComboBoxEmpresaC4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jButtonBack2)))
                 .addGap(40, 40, 40))
         );
         jPanel3Layout.setVerticalGroup(
@@ -650,7 +664,7 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
 
         jButtonC6.setBackground(new java.awt.Color(239, 248, 255));
         jButtonC6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButtonC6.setText("Consult");
+        jButtonC6.setText("Consultar");
         jButtonC6.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(168, 184, 217), new java.awt.Color(168, 184, 217), java.awt.Color.gray, java.awt.Color.gray));
         jButtonC6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -682,7 +696,7 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
 
         jButtonBack3.setBackground(new java.awt.Color(239, 248, 255));
         jButtonBack3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButtonBack3.setText("Back");
+        jButtonBack3.setText("Retroceder");
         jButtonBack3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(168, 184, 217), new java.awt.Color(168, 184, 217), java.awt.Color.gray, java.awt.Color.gray));
         jButtonBack3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -696,7 +710,7 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButtonBack3, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonBack3)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel4Layout.createSequentialGroup()
@@ -856,30 +870,30 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
     }//GEN-LAST:event_jComboBoxEmpresaC4ActionPerformed
 
     private void jButtonBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBackActionPerformed
-        // TODO add your handling code here:
         this.setVisible(false);
-        ConfigDialogConsult menu = new ConfigDialogConsult(null, true);
+        ConfigDialogConsult menu = new ConfigDialogConsult(null, true, role);
+        menu.setProfesorId(this.profesorId);
         menu.setVisible(true);
     }//GEN-LAST:event_jButtonBackActionPerformed
 
     private void jButtonBack1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBack1ActionPerformed
-        // TODO add your handling code here:
         this.setVisible(false);
-        ConfigDialogConsult menu = new ConfigDialogConsult(null, true);
+        ConfigDialogConsult menu = new ConfigDialogConsult(null, true, role);
+        menu.setProfesorId(this.profesorId);
         menu.setVisible(true);
     }//GEN-LAST:event_jButtonBack1ActionPerformed
 
     private void jButtonBack2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBack2ActionPerformed
-        // TODO add your handling code here:
         this.setVisible(false);
-        ConfigDialogConsult menu = new ConfigDialogConsult(null, true);
+        ConfigDialogConsult menu = new ConfigDialogConsult(null, true, role);
+        menu.setProfesorId(this.profesorId);
         menu.setVisible(true);
     }//GEN-LAST:event_jButtonBack2ActionPerformed
 
     private void jButtonBack3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBack3ActionPerformed
-        // TODO add your handling code here:
         this.setVisible(false);
-        ConfigDialogConsult menu = new ConfigDialogConsult(null, true);
+        ConfigDialogConsult menu = new ConfigDialogConsult(null, true, role);
+        menu.setProfesorId(this.profesorId);
         menu.setVisible(true);
     }//GEN-LAST:event_jButtonBack3ActionPerformed
     
@@ -920,9 +934,12 @@ public class ConfigDialogFCT extends javax.swing.JDialog {
         //</editor-fold>
 
         /* Create and display the dialog */
+        ConfigDialogLogin loginDialog = new ConfigDialogLogin(new javax.swing.JFrame(), false);
+        loginDialog.setVisible(false);
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ConfigDialogFCT dialog = new ConfigDialogFCT(new javax.swing.JFrame(), true);
+                String role = loginDialog.getRole();
+                ConfigDialogFCT dialog = new ConfigDialogFCT(new javax.swing.JFrame(), true, role);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {

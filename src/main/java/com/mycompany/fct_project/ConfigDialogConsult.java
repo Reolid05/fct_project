@@ -14,10 +14,12 @@ public class ConfigDialogConsult extends javax.swing.JDialog {
      * Creates new form ConfigDialogConsult
      */
     private int profesorId;
+    private String role;
     
-    public ConfigDialogConsult(java.awt.Frame parent, boolean modal) {
+    public ConfigDialogConsult(java.awt.Frame parent, boolean modal, String role) {
         super(parent, modal);
         initComponents();
+        this.role = role;
         setResizable(false);
         setLocationRelativeTo(null);
     }
@@ -30,9 +32,6 @@ public class ConfigDialogConsult extends javax.swing.JDialog {
         return profesorId;
     }
 
-    ConfigDialogLogin loginDialog = new ConfigDialogLogin(new javax.swing.JFrame(), true);
-    String role = loginDialog.getRole();
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -43,9 +42,9 @@ public class ConfigDialogConsult extends javax.swing.JDialog {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
+        jButtonFCT = new javax.swing.JButton();
+        jButtonEmpresa = new javax.swing.JButton();
+        jButtonIncidencias = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jButtonBack = new javax.swing.JButton();
 
@@ -53,45 +52,45 @@ public class ConfigDialogConsult extends javax.swing.JDialog {
 
         jPanel1.setBackground(new java.awt.Color(190, 228, 255));
 
-        jButton3.setBackground(new java.awt.Color(239, 248, 255));
-        jButton3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jButton3.setText("FCT");
-        jButton3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(168, 184, 217), new java.awt.Color(168, 184, 217), java.awt.Color.gray, java.awt.Color.gray));
-        jButton3.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        jButtonFCT.setBackground(new java.awt.Color(239, 248, 255));
+        jButtonFCT.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jButtonFCT.setText("FCT");
+        jButtonFCT.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(168, 184, 217), new java.awt.Color(168, 184, 217), java.awt.Color.gray, java.awt.Color.gray));
+        jButtonFCT.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jButtonFCT.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                jButtonFCTActionPerformed(evt);
             }
         });
 
-        jButton4.setBackground(new java.awt.Color(239, 248, 255));
-        jButton4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jButton4.setText("Empresa");
-        jButton4.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(168, 184, 217), new java.awt.Color(168, 184, 217), java.awt.Color.gray, java.awt.Color.gray));
-        jButton4.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        jButtonEmpresa.setBackground(new java.awt.Color(239, 248, 255));
+        jButtonEmpresa.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jButtonEmpresa.setText("Empresa");
+        jButtonEmpresa.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(168, 184, 217), new java.awt.Color(168, 184, 217), java.awt.Color.gray, java.awt.Color.gray));
+        jButtonEmpresa.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jButtonEmpresa.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                jButtonEmpresaActionPerformed(evt);
             }
         });
 
-        jButton5.setBackground(new java.awt.Color(239, 248, 255));
-        jButton5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jButton5.setText("Incidencias");
-        jButton5.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(168, 184, 217), new java.awt.Color(168, 184, 217), java.awt.Color.gray, java.awt.Color.gray));
-        jButton5.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        jButtonIncidencias.setBackground(new java.awt.Color(239, 248, 255));
+        jButtonIncidencias.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jButtonIncidencias.setText("Incidencias");
+        jButtonIncidencias.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(168, 184, 217), new java.awt.Color(168, 184, 217), java.awt.Color.gray, java.awt.Color.gray));
+        jButtonIncidencias.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jButtonIncidencias.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                jButtonIncidenciasActionPerformed(evt);
             }
         });
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 20)); // NOI18N
-        jLabel1.setText("CONSULTATION");
+        jLabel1.setText("CONSULTAS");
 
         jButtonBack.setBackground(new java.awt.Color(239, 248, 255));
         jButtonBack.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButtonBack.setText("Back");
+        jButtonBack.setText("Retroceder");
         jButtonBack.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(168, 184, 217), new java.awt.Color(168, 184, 217), java.awt.Color.gray, java.awt.Color.gray));
         jButtonBack.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -104,33 +103,32 @@ public class ConfigDialogConsult extends javax.swing.JDialog {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(35, Short.MAX_VALUE)
+                .addGap(26, 26, 26)
+                .addComponent(jButtonFCT, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jButtonBack, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(12, 12, 12)
-                                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(17, 17, 17))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(120, 120, 120))))
+                    .addComponent(jLabel1)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jButtonEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButtonIncidencias, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 26, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButtonBack)
+                .addGap(17, 17, 17))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(47, 47, 47)
+                .addContainerGap(53, Short.MAX_VALUE)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 60, Short.MAX_VALUE)
+                .addGap(47, 47, 47)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(31, 31, 31)
+                    .addComponent(jButtonFCT, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonIncidencias, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(38, 38, 38)
                 .addComponent(jButtonBack)
                 .addGap(19, 19, 19))
         );
@@ -149,31 +147,31 @@ public class ConfigDialogConsult extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void jButtonFCTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFCTActionPerformed
         this.setVisible(false);
-        ConfigDialogFCT dialog = new ConfigDialogFCT(null, true);
-        //dialog.setProfesorId(this.profesorId);
+        ConfigDialogFCT dialog = new ConfigDialogFCT(null, true, role);
+        dialog.setProfesorId(this.profesorId);
         dialog.setVisible(true);
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_jButtonFCTActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    private void jButtonEmpresaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEmpresaActionPerformed
         this.setVisible(false);
-        ConfigDialogEmpresa dialog = new ConfigDialogEmpresa(null, true);
-        //dialog.setProfesorId(this.profesorId);
+        ConfigDialogEmpresa dialog = new ConfigDialogEmpresa(null, true, role);
+        dialog.setProfesorId(this.profesorId);
         dialog.setVisible(true);
-    }//GEN-LAST:event_jButton4ActionPerformed
+    }//GEN-LAST:event_jButtonEmpresaActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+    private void jButtonIncidenciasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonIncidenciasActionPerformed
         this.setVisible(false);
-        ConfigDialogIncidence dialog = new ConfigDialogIncidence(null, true);
-        //dialog.setProfesorId(this.profesorId);
+        ConfigDialogIncidence dialog = new ConfigDialogIncidence(null, true, role);
+        dialog.setProfesorId(this.profesorId);
         dialog.setVisible(true);
-    }//GEN-LAST:event_jButton5ActionPerformed
+    }//GEN-LAST:event_jButtonIncidenciasActionPerformed
 
     private void jButtonBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBackActionPerformed
         this.setVisible(false);
         ConfigDialogMenu menu = new ConfigDialogMenu(null, true, this.role);
-        menu.setProfesorId(this.profesorId);  // Pasar el profesorId
+        menu.setProfesorId(this.profesorId);
         menu.setVisible(true);
         menu.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
@@ -212,9 +210,12 @@ public class ConfigDialogConsult extends javax.swing.JDialog {
         //</editor-fold>
 
         /* Create and display the dialog */
+        ConfigDialogLogin loginDialog = new ConfigDialogLogin(new javax.swing.JFrame(), false);
+        loginDialog.setVisible(false);
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ConfigDialogConsult dialog = new ConfigDialogConsult(new javax.swing.JFrame(), true);
+                String role = loginDialog.getRole();
+                ConfigDialogConsult dialog = new ConfigDialogConsult(new javax.swing.JFrame(), true, role);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -227,10 +228,10 @@ public class ConfigDialogConsult extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
     private javax.swing.JButton jButtonBack;
+    private javax.swing.JButton jButtonEmpresa;
+    private javax.swing.JButton jButtonFCT;
+    private javax.swing.JButton jButtonIncidencias;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables

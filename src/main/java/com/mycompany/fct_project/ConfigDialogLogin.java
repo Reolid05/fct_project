@@ -97,10 +97,10 @@ public class ConfigDialogLogin extends javax.swing.JDialog {
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/iconologin.png"))); // NOI18N
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 2, 18)); // NOI18N
-        jLabel1.setText("User:");
+        jLabel1.setText("Usuario:");
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 2, 18)); // NOI18N
-        jLabel2.setText("Password:");
+        jLabel2.setText("Contraseña:");
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 2, 18)); // NOI18N
         jLabel4.setText("Url:");

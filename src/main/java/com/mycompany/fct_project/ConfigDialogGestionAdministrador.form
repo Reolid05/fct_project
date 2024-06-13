@@ -199,8 +199,8 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace max="-2" attributes="0"/>
+                      <Group type="102" alignment="1" attributes="0">
+                          <EmptySpace max="32767" attributes="0"/>
                           <Component id="jButtonNew" min="-2" pref="91" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                           <Component id="jButtonAdd" min="-2" pref="91" max="-2" attributes="0"/>
@@ -208,7 +208,7 @@
                           <Component id="jButtonDelete" min="-2" pref="91" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="jButtonModify" min="-2" pref="91" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace min="-2" pref="56" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -230,7 +230,7 @@
               <SubComponents>
                 <Component class="javax.swing.JButton" name="jButtonAdd">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="ADD"/>
+                    <Property name="text" type="java.lang.String" value="A&#xd1;ADIR"/>
                     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                       <Border info="org.netbeans.modules.form.compat2.border.SoftBevelBorderInfo">
                         <BevelBorder/>
@@ -243,7 +243,7 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="jButtonModify">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="MODIFY"/>
+                    <Property name="text" type="java.lang.String" value="MODIFICAR"/>
                     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                       <Border info="org.netbeans.modules.form.compat2.border.SoftBevelBorderInfo">
                         <BevelBorder/>
@@ -256,7 +256,7 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="jButtonDelete">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="DELETE"/>
+                    <Property name="text" type="java.lang.String" value="BORRAR"/>
                     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                       <Border info="org.netbeans.modules.form.compat2.border.SoftBevelBorderInfo">
                         <BevelBorder/>
@@ -269,7 +269,7 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="jButtonNew">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="NEW"/>
+                    <Property name="text" type="java.lang.String" value="CREAR"/>
                     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                       <Border info="org.netbeans.modules.form.compat2.border.SoftBevelBorderInfo">
                         <BevelBorder/>
@@ -358,7 +358,7 @@
             </Container>
             <Component class="javax.swing.JButton" name="jButtonSave">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Save"/>
+                <Property name="text" type="java.lang.String" value="Guardar"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonSaveActionPerformed"/>
@@ -366,7 +366,7 @@
             </Component>
             <Component class="javax.swing.JButton" name="jButtonBack">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Back"/>
+                <Property name="text" type="java.lang.String" value="Retroceder"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonBackActionPerformed"/>
@@ -555,7 +555,7 @@
               <SubComponents>
                 <Component class="javax.swing.JButton" name="jButtonAddProfe">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="ADD"/>
+                    <Property name="text" type="java.lang.String" value="A&#xd1;ADIR"/>
                     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                       <Border info="org.netbeans.modules.form.compat2.border.SoftBevelBorderInfo">
                         <BevelBorder/>
@@ -568,7 +568,7 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="jButtonModifyProfe">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="MODIFY"/>
+                    <Property name="text" type="java.lang.String" value="MODIFICAR"/>
                     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                       <Border info="org.netbeans.modules.form.compat2.border.SoftBevelBorderInfo">
                         <BevelBorder/>
@@ -581,7 +581,7 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="jButtonDeleteProfe">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="DELETE"/>
+                    <Property name="text" type="java.lang.String" value="BORRAR"/>
                     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                       <Border info="org.netbeans.modules.form.compat2.border.SoftBevelBorderInfo">
                         <BevelBorder/>
@@ -594,7 +594,7 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="jButtonNewProfe">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="NEW"/>
+                    <Property name="text" type="java.lang.String" value="CREAR"/>
                     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                       <Border info="org.netbeans.modules.form.compat2.border.SoftBevelBorderInfo">
                         <BevelBorder/>
@@ -683,7 +683,7 @@
             </Container>
             <Component class="javax.swing.JButton" name="jButtonSaveProfe">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Save"/>
+                <Property name="text" type="java.lang.String" value="Guardar"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonSaveProfeActionPerformed"/>
@@ -691,7 +691,7 @@
             </Component>
             <Component class="javax.swing.JButton" name="jButtonBack1">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Back"/>
+                <Property name="text" type="java.lang.String" value="Retroceder"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonBack1ActionPerformed"/>
@@ -723,7 +723,7 @@
                           <Component id="jPanel12" alignment="0" max="32767" attributes="0"/>
                           <Group type="102" alignment="1" attributes="0">
                               <Component id="jButtonSaveContactos" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="397" max="32767" attributes="0"/>
+                              <EmptySpace pref="382" max="32767" attributes="0"/>
                               <Component id="jButtonBackContactos" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -946,7 +946,7 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="jButtonModifyContacto">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="MODIFY"/>
+                    <Property name="text" type="java.lang.String" value="MODIFICAR"/>
                     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                       <Border info="org.netbeans.modules.form.compat2.border.SoftBevelBorderInfo">
                         <BevelBorder/>
@@ -1059,7 +1059,7 @@
             </Container>
             <Component class="javax.swing.JButton" name="jButtonSaveContactos">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Save"/>
+                <Property name="text" type="java.lang.String" value="Guardar"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonSaveContactosActionPerformed"/>
@@ -1067,7 +1067,7 @@
             </Component>
             <Component class="javax.swing.JButton" name="jButtonBackContactos">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Back"/>
+                <Property name="text" type="java.lang.String" value="Retroceder"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonBackContactosActionPerformed"/>
@@ -1097,7 +1097,6 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jPanel14" alignment="0" max="32767" attributes="0"/>
                           <Group type="102" alignment="1" attributes="0">
-                              <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
                               <Component id="jButtonDeleteIncidencia" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
                               <Component id="jButtonBackInidencia" min="-2" max="-2" attributes="0"/>
@@ -1214,7 +1213,7 @@
             </Container>
             <Component class="javax.swing.JButton" name="jButtonBackInidencia">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Back"/>
+                <Property name="text" type="java.lang.String" value="Retroceder"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonBackInidenciaActionPerformed"/>
@@ -1222,7 +1221,7 @@
             </Component>
             <Component class="javax.swing.JButton" name="jButtonDeleteIncidencia">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Delete"/>
+                <Property name="text" type="java.lang.String" value="Eliminar"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonDeleteIncidenciaActionPerformed"/>

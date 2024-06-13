@@ -374,7 +374,7 @@ public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
     // Métodos para la gestión de profesores
     
     private void cargarDatosTablaProfesor() {
-        String query = "SELECT idprofe, nombre, apellidos FROM PROFESOR";
+        String query = "SELECT idprofe, nombre, apellidos FROM PROFESOR ORDER BY idprofe";
         try (Connection con = DatabaseConnection.getConnection();
              Statement stmt = con.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
@@ -631,7 +631,7 @@ public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        jButtonAdd.setText("ADD");
+        jButtonAdd.setText("AÑADIR");
         jButtonAdd.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jButtonAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -639,7 +639,7 @@ public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
             }
         });
 
-        jButtonModify.setText("MODIFY");
+        jButtonModify.setText("MODIFICAR");
         jButtonModify.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jButtonModify.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -647,7 +647,7 @@ public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
             }
         });
 
-        jButtonDelete.setText("DELETE");
+        jButtonDelete.setText("BORRAR");
         jButtonDelete.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jButtonDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -655,7 +655,7 @@ public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
             }
         });
 
-        jButtonNew.setText("NEW");
+        jButtonNew.setText("CREAR");
         jButtonNew.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jButtonNew.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -667,8 +667,8 @@ public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButtonNew, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jButtonAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -676,7 +676,7 @@ public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
                 .addComponent(jButtonDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jButtonModify, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(56, 56, 56))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -731,14 +731,14 @@ public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
-        jButtonSave.setText("Save");
+        jButtonSave.setText("Guardar");
         jButtonSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonSaveActionPerformed(evt);
             }
         });
 
-        jButtonBack.setText("Back");
+        jButtonBack.setText("Retroceder");
         jButtonBack.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonBackActionPerformed(evt);
@@ -844,7 +844,7 @@ public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
 
         jPanel7.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        jButtonAddProfe.setText("ADD");
+        jButtonAddProfe.setText("AÑADIR");
         jButtonAddProfe.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jButtonAddProfe.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -852,7 +852,7 @@ public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
             }
         });
 
-        jButtonModifyProfe.setText("MODIFY");
+        jButtonModifyProfe.setText("MODIFICAR");
         jButtonModifyProfe.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jButtonModifyProfe.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -860,7 +860,7 @@ public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
             }
         });
 
-        jButtonDeleteProfe.setText("DELETE");
+        jButtonDeleteProfe.setText("BORRAR");
         jButtonDeleteProfe.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jButtonDeleteProfe.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -868,7 +868,7 @@ public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
             }
         });
 
-        jButtonNewProfe.setText("NEW");
+        jButtonNewProfe.setText("CREAR");
         jButtonNewProfe.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jButtonNewProfe.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -944,14 +944,14 @@ public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
-        jButtonSaveProfe.setText("Save");
+        jButtonSaveProfe.setText("Guardar");
         jButtonSaveProfe.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonSaveProfeActionPerformed(evt);
             }
         });
 
-        jButtonBack1.setText("Back");
+        jButtonBack1.setText("Retroceder");
         jButtonBack1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonBack1ActionPerformed(evt);
@@ -1053,7 +1053,7 @@ public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
             }
         });
 
-        jButtonModifyContacto.setText("MODIFY");
+        jButtonModifyContacto.setText("MODIFICAR");
         jButtonModifyContacto.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jButtonModifyContacto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1182,14 +1182,14 @@ public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
-        jButtonSaveContactos.setText("Save");
+        jButtonSaveContactos.setText("Guardar");
         jButtonSaveContactos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonSaveContactosActionPerformed(evt);
             }
         });
 
-        jButtonBackContactos.setText("Back");
+        jButtonBackContactos.setText("Retroceder");
         jButtonBackContactos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonBackContactosActionPerformed(evt);
@@ -1207,7 +1207,7 @@ public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
                     .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
                         .addComponent(jButtonSaveContactos)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 397, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 382, Short.MAX_VALUE)
                         .addComponent(jButtonBackContactos)))
                 .addContainerGap())
         );
@@ -1275,14 +1275,14 @@ public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
-        jButtonBackInidencia.setText("Back");
+        jButtonBackInidencia.setText("Retroceder");
         jButtonBackInidencia.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonBackInidenciaActionPerformed(evt);
             }
         });
 
-        jButtonDeleteIncidencia.setText("Delete");
+        jButtonDeleteIncidencia.setText("Eliminar");
         jButtonDeleteIncidencia.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonDeleteIncidenciaActionPerformed(evt);
@@ -1298,7 +1298,6 @@ public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
                 .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel11Layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
                         .addComponent(jButtonDeleteIncidencia)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButtonBackInidencia)))

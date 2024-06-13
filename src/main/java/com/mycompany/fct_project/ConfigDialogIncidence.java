@@ -24,9 +24,21 @@ public class ConfigDialogIncidence extends javax.swing.JDialog {
     /**
      * Creates new form ConfigDialogIncidence
      */
-    public ConfigDialogIncidence(java.awt.Frame parent, boolean modal) {
+    private String role;
+    private int profesorId;
+    
+    public void setProfesorId(int profesorId) {
+        this.profesorId = profesorId;
+    }
+
+    public int getProfesorId() {
+        return profesorId;
+    }
+    
+    public ConfigDialogIncidence(java.awt.Frame parent, boolean modal, String role) {
         super(parent, modal);
         initComponents();
+        this.role = role;
         setLocationRelativeTo(null);
         setResizable(false);
         poblarComboBoxCursoEscolarC5();
@@ -133,7 +145,7 @@ private void actualizarTablaC5(List<String> incidencias) {
 
         jButtonC5.setBackground(new java.awt.Color(239, 248, 255));
         jButtonC5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButtonC5.setText("Consult");
+        jButtonC5.setText("Consultar");
         jButtonC5.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(168, 184, 217), new java.awt.Color(168, 184, 217), java.awt.Color.gray, java.awt.Color.gray));
         jButtonC5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -154,11 +166,12 @@ private void actualizarTablaC5(List<String> incidencias) {
         ));
         jTableC5.setEnabled(false);
         jTableC5.setGridColor(new java.awt.Color(217, 239, 255));
+        jTableC5.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(jTableC5);
 
         jButtonBack.setBackground(new java.awt.Color(239, 248, 255));
         jButtonBack.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButtonBack.setText("Back");
+        jButtonBack.setText("Retroceder");
         jButtonBack.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(168, 184, 217), new java.awt.Color(168, 184, 217), java.awt.Color.gray, java.awt.Color.gray));
         jButtonBack.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -180,14 +193,15 @@ private void actualizarTablaC5(List<String> incidencias) {
                         .addComponent(jLabel1))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(38, 38, 38)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jButtonBack, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 602, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addComponent(jLabel4)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(jComboBoxCursoEscolarC5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 602, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jComboBoxCursoEscolarC5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jButtonBack)))
                 .addContainerGap(27, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -244,9 +258,9 @@ private void actualizarTablaC5(List<String> incidencias) {
     }//GEN-LAST:event_jButtonC5ActionPerformed
 
     private void jButtonBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBackActionPerformed
-        // TODO add your handling code here:
         this.setVisible(false);
-        ConfigDialogConsult menu = new ConfigDialogConsult(null, true);
+        ConfigDialogConsult menu = new ConfigDialogConsult(null, true, role);
+        menu.setProfesorId(this.profesorId);
         menu.setVisible(true);
     }//GEN-LAST:event_jButtonBackActionPerformed
 
@@ -278,9 +292,12 @@ private void actualizarTablaC5(List<String> incidencias) {
         //</editor-fold>
 
         /* Create and display the dialog */
+        ConfigDialogLogin loginDialog = new ConfigDialogLogin(new javax.swing.JFrame(), false);
+        loginDialog.setVisible(false);
         java.awt.EventQueue.invokeLater(new Runnable() {
+            String role = loginDialog.getRole();
             public void run() {
-                ConfigDialogIncidence dialog = new ConfigDialogIncidence(new javax.swing.JFrame(), true);
+                ConfigDialogIncidence dialog = new ConfigDialogIncidence(new javax.swing.JFrame(), true, role);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {

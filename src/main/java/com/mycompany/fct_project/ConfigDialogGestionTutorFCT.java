@@ -164,6 +164,11 @@ public class ConfigDialogGestionTutorFCT extends javax.swing.JDialog {
         String periodo = jTextFieldPeriodo.getText();
         int numAlumnos = Integer.parseInt(jTextFieldNumAlumnos.getText());
 
+        if (idEmpresa.length() > 9) {
+            JOptionPane.showMessageDialog(this, "ID Empresa cannot be longer than 9 characters.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         String query = "INSERT INTO REALIZAN_FCT (idempresa, nombregrupo, cursoescolar, periodo, num_alu_asignados) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection con = DatabaseConnection.getConnection();
@@ -183,6 +188,7 @@ public class ConfigDialogGestionTutorFCT extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "Error al agregar el registro: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
 
     private void guardarCambios() {
         int selectedRow = jTableRealizanFCT.getSelectedRow();
@@ -395,7 +401,7 @@ public class ConfigDialogGestionTutorFCT extends javax.swing.JDialog {
 
         jPanel7.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        jButtonAgregar.setText("ADD");
+        jButtonAgregar.setText("AÑADIR");
         jButtonAgregar.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jButtonAgregar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -403,7 +409,7 @@ public class ConfigDialogGestionTutorFCT extends javax.swing.JDialog {
             }
         });
 
-        jButtonModificar.setText("MODIFY");
+        jButtonModificar.setText("MODIFICAR");
         jButtonModificar.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jButtonModificar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -411,7 +417,7 @@ public class ConfigDialogGestionTutorFCT extends javax.swing.JDialog {
             }
         });
 
-        jButtonEliminar.setText("DELETE");
+        jButtonEliminar.setText("BORRAR");
         jButtonEliminar.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jButtonEliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -419,7 +425,7 @@ public class ConfigDialogGestionTutorFCT extends javax.swing.JDialog {
             }
         });
 
-        jButtonNuevo.setText("NEW");
+        jButtonNuevo.setText("CREAR");
         jButtonNuevo.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jButtonNuevo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -487,14 +493,14 @@ public class ConfigDialogGestionTutorFCT extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
-        jButtonGuardar.setText("Save");
+        jButtonGuardar.setText("Guardar");
         jButtonGuardar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonGuardarActionPerformed(evt);
             }
         });
 
-        jButtonBack1.setText("Back");
+        jButtonBack1.setText("Retroceder");
         jButtonBack1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonBack1ActionPerformed(evt);
@@ -592,9 +598,9 @@ public class ConfigDialogGestionTutorFCT extends javax.swing.JDialog {
     }//GEN-LAST:event_jButtonGuardarActionPerformed
 
     private void jButtonBack1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBack1ActionPerformed
-        // TODO add your handling code here:
         this.setVisible(false);
         ConfigDialogMenu menu = new ConfigDialogMenu(null, true, this.role);
+        menu.setProfesorId(this.profesorId);
         menu.setVisible(true);
         menu.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override

@@ -27,9 +27,21 @@ public class ConfigDialogEmpresa extends javax.swing.JDialog {
     /**
      * Creates new form ConfigDialogStart
      */
-    public ConfigDialogEmpresa(java.awt.Frame parent, boolean modal) {
+    private String role;
+    private int profesorId;
+    
+    public void setProfesorId(int profesorId) {
+        this.profesorId = profesorId;
+    }
+
+    public int getProfesorId() {
+        return profesorId;
+    }
+    
+    public ConfigDialogEmpresa(java.awt.Frame parent, boolean modal, String role) {
         super(parent, modal);
         initComponents();
+        this.role = role;
         setLocationRelativeTo(null);
         pack();
         setResizable(false);
@@ -218,7 +230,7 @@ public class ConfigDialogEmpresa extends javax.swing.JDialog {
         jButtonC1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextPaneC1 = new javax.swing.JTextPane();
-        jButtonC2 = new javax.swing.JButton();
+        jButtonBack = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         jComboBoxEmpresaC7 = new javax.swing.JComboBox<>();
@@ -252,7 +264,7 @@ public class ConfigDialogEmpresa extends javax.swing.JDialog {
 
         jButtonC1.setBackground(new java.awt.Color(239, 248, 255));
         jButtonC1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButtonC1.setText("Consult");
+        jButtonC1.setText("Consultar");
         jButtonC1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(168, 184, 217), new java.awt.Color(168, 184, 217), java.awt.Color.gray, java.awt.Color.gray));
         jButtonC1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -263,13 +275,13 @@ public class ConfigDialogEmpresa extends javax.swing.JDialog {
         jTextPaneC1.setEditable(false);
         jScrollPane1.setViewportView(jTextPaneC1);
 
-        jButtonC2.setBackground(new java.awt.Color(239, 248, 255));
-        jButtonC2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButtonC2.setText("Back");
-        jButtonC2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(168, 184, 217), new java.awt.Color(168, 184, 217), java.awt.Color.gray, java.awt.Color.gray));
-        jButtonC2.addActionListener(new java.awt.event.ActionListener() {
+        jButtonBack.setBackground(new java.awt.Color(239, 248, 255));
+        jButtonBack.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jButtonBack.setText("Retroceder");
+        jButtonBack.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(168, 184, 217), new java.awt.Color(168, 184, 217), java.awt.Color.gray, java.awt.Color.gray));
+        jButtonBack.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonC2ActionPerformed(evt);
+                jButtonBackActionPerformed(evt);
             }
         });
 
@@ -289,7 +301,7 @@ public class ConfigDialogEmpresa extends javax.swing.JDialog {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(jButtonC2, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jButtonBack))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jButtonC1, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
@@ -308,7 +320,7 @@ public class ConfigDialogEmpresa extends javax.swing.JDialog {
                     .addComponent(jButtonC1)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(1, 1, 1)
-                .addComponent(jButtonC2))
+                .addComponent(jButtonBack))
         );
 
         jTabbedPane1.addTab("Ver Empresas", jPanel1);
@@ -328,7 +340,7 @@ public class ConfigDialogEmpresa extends javax.swing.JDialog {
 
         jButtonC7.setBackground(new java.awt.Color(239, 248, 255));
         jButtonC7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButtonC7.setText("Consult");
+        jButtonC7.setText("Consultar");
         jButtonC7.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(168, 184, 217), new java.awt.Color(168, 184, 217), java.awt.Color.gray, java.awt.Color.gray));
         jButtonC7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -338,7 +350,7 @@ public class ConfigDialogEmpresa extends javax.swing.JDialog {
 
         jButtonBack1.setBackground(new java.awt.Color(239, 248, 255));
         jButtonBack1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButtonBack1.setText("Back");
+        jButtonBack1.setText("Retroceder");
         jButtonBack1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(168, 184, 217), new java.awt.Color(168, 184, 217), java.awt.Color.gray, java.awt.Color.gray));
         jButtonBack1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -353,7 +365,7 @@ public class ConfigDialogEmpresa extends javax.swing.JDialog {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButtonBack1, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonBack1)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -400,7 +412,7 @@ public class ConfigDialogEmpresa extends javax.swing.JDialog {
 
         jButtonBack2.setBackground(new java.awt.Color(239, 248, 255));
         jButtonBack2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButtonBack2.setText("Back");
+        jButtonBack2.setText("Retroceder");
         jButtonBack2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(168, 184, 217), new java.awt.Color(168, 184, 217), java.awt.Color.gray, java.awt.Color.gray));
         jButtonBack2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -410,7 +422,7 @@ public class ConfigDialogEmpresa extends javax.swing.JDialog {
 
         jButtonC8.setBackground(new java.awt.Color(239, 248, 255));
         jButtonC8.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButtonC8.setText("Consult");
+        jButtonC8.setText("Consultar");
         jButtonC8.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(168, 184, 217), new java.awt.Color(168, 184, 217), java.awt.Color.gray, java.awt.Color.gray));
         jButtonC8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -434,7 +446,7 @@ public class ConfigDialogEmpresa extends javax.swing.JDialog {
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jComboBoxEmpresaC8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jButtonBack2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButtonBack2, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap(33, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -494,9 +506,9 @@ public class ConfigDialogEmpresa extends javax.swing.JDialog {
     }//GEN-LAST:event_jComboBoxEmpresaC8ActionPerformed
 
     private void jButtonBack2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBack2ActionPerformed
-        // TODO add your handling code here:
         this.setVisible(false);
-        ConfigDialogConsult menu = new ConfigDialogConsult(null, true);
+        ConfigDialogConsult menu = new ConfigDialogConsult(null, true, role);
+        menu.setProfesorId(this.profesorId);
         menu.setVisible(true);
     }//GEN-LAST:event_jButtonBack2ActionPerformed
 
@@ -504,17 +516,17 @@ public class ConfigDialogEmpresa extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBoxEmpresaC1ActionPerformed
 
-    private void jButtonC2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonC2ActionPerformed
-        // TODO add your handling code here:
+    private void jButtonBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBackActionPerformed
         this.setVisible(false);
-        ConfigDialogConsult menu = new ConfigDialogConsult(null, true);
+        ConfigDialogConsult menu = new ConfigDialogConsult(null, true, role);
+        menu.setProfesorId(this.profesorId);
         menu.setVisible(true);
-    }//GEN-LAST:event_jButtonC2ActionPerformed
+    }//GEN-LAST:event_jButtonBackActionPerformed
 
     private void jButtonBack1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBack1ActionPerformed
-        // TODO add your handling code here:
         this.setVisible(false);
-        ConfigDialogConsult menu = new ConfigDialogConsult(null, true);
+        ConfigDialogConsult menu = new ConfigDialogConsult(null, true, role);
+        menu.setProfesorId(this.profesorId);
         menu.setVisible(true);
     }//GEN-LAST:event_jButtonBack1ActionPerformed
 
@@ -564,9 +576,12 @@ public class ConfigDialogEmpresa extends javax.swing.JDialog {
         //</editor-fold>
 
         /* Create and display the dialog */
+        ConfigDialogLogin loginDialog = new ConfigDialogLogin(new javax.swing.JFrame(), false);
+        loginDialog.setVisible(false);
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ConfigDialogEmpresa dialog = new ConfigDialogEmpresa(new javax.swing.JFrame(), true);
+                String role = loginDialog.getRole();
+                ConfigDialogEmpresa dialog = new ConfigDialogEmpresa(new javax.swing.JFrame(), true, role);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -579,10 +594,10 @@ public class ConfigDialogEmpresa extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonBack;
     private javax.swing.JButton jButtonBack1;
     private javax.swing.JButton jButtonBack2;
     private javax.swing.JButton jButtonC1;
-    private javax.swing.JButton jButtonC2;
     private javax.swing.JButton jButtonC7;
     private javax.swing.JButton jButtonC8;
     private javax.swing.JComboBox<String> jComboBoxEmpresaC1;

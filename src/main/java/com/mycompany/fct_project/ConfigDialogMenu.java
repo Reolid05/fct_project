@@ -47,9 +47,9 @@ public class ConfigDialogMenu extends javax.swing.JDialog {
         jLabel2 = new javax.swing.JLabel();
         jButtonLogin = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
+        jButtonSalir = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setPreferredSize(null);
 
         jPanel1.setBackground(new java.awt.Color(190, 228, 255));
         jPanel1.setEnabled(false);
@@ -57,7 +57,7 @@ public class ConfigDialogMenu extends javax.swing.JDialog {
 
         jButtonManage.setBackground(new java.awt.Color(239, 248, 255));
         jButtonManage.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jButtonManage.setText("MANAGE");
+        jButtonManage.setText("GESTIÓN");
         jButtonManage.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(168, 184, 217), new java.awt.Color(168, 184, 217), java.awt.Color.gray, java.awt.Color.gray));
         jButtonManage.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -67,7 +67,7 @@ public class ConfigDialogMenu extends javax.swing.JDialog {
 
         jButtonConsult.setBackground(new java.awt.Color(239, 248, 255));
         jButtonConsult.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jButtonConsult.setText("CONSULT");
+        jButtonConsult.setText("CONSULTAS");
         jButtonConsult.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(168, 184, 217), new java.awt.Color(168, 184, 217), java.awt.Color.gray, java.awt.Color.gray));
         jButtonConsult.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jButtonConsult.addActionListener(new java.awt.event.ActionListener() {
@@ -88,7 +88,14 @@ public class ConfigDialogMenu extends javax.swing.JDialog {
         });
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
-        jLabel3.setText("New login:");
+        jLabel3.setText("Nuevo login:");
+
+        jButtonSalir.setText("Salir");
+        jButtonSalir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonSalirActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -102,16 +109,18 @@ public class ConfigDialogMenu extends javax.swing.JDialog {
                 .addGap(76, 76, 76))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(34, 34, 34)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonLogin))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jButtonConsult, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButtonManage, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addComponent(jButtonConsult, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jButtonManage, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(36, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonLogin)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButtonSalir)
+                .addGap(21, 21, 21))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -124,11 +133,12 @@ public class ConfigDialogMenu extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButtonManage, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonConsult, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(53, 53, 53)
+                .addGap(50, 50, 50)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonLogin)
-                    .addComponent(jLabel3))
-                .addGap(16, 16, 16))
+                    .addComponent(jLabel3)
+                    .addComponent(jButtonSalir))
+                .addGap(19, 19, 19))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -147,7 +157,7 @@ public class ConfigDialogMenu extends javax.swing.JDialog {
 
     private void jButtonConsultActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConsultActionPerformed
         this.setVisible(false);
-        ConfigDialogConsult consult = new ConfigDialogConsult(null, true);
+        ConfigDialogConsult consult = new ConfigDialogConsult(null, true, role);
         consult.setProfesorId(profesorId);
         consult.setVisible(true);
         consult.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -185,8 +195,16 @@ public class ConfigDialogMenu extends javax.swing.JDialog {
                 });
                 break;
             case "TUTOR_RESPONSABLE":
-                // ConfigDialogGestionTutorResponsable tutorRespDialog = new ConfigDialogGestionTutorResponsable(null, true);
-                // tutorRespDialog.setVisible(true);
+                ConfigDialogGestionTutorResponsable tutorRes = new ConfigDialogGestionTutorResponsable(null, true, role);
+                tutorRes.setProfesorId(profesorId);
+                tutorRes.setVisible(true);
+                tutorRes.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        ConfigDialogMenu.this.setProfesorId(tutorRes.getProfesorId());
+                        ConfigDialogMenu.this.setVisible(true);
+                    }
+                });
                 break;
             default:
                 JOptionPane.showMessageDialog(this, "Role not recognized.");
@@ -206,6 +224,10 @@ public class ConfigDialogMenu extends javax.swing.JDialog {
             }
         });
     }//GEN-LAST:event_jButtonLoginActionPerformed
+
+    private void jButtonSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSalirActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_jButtonSalirActionPerformed
 
     /**
      * @param args the command line arguments
@@ -257,6 +279,7 @@ public class ConfigDialogMenu extends javax.swing.JDialog {
     private javax.swing.JButton jButtonConsult;
     private javax.swing.JButton jButtonLogin;
     private javax.swing.JButton jButtonManage;
+    private javax.swing.JButton jButtonSalir;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

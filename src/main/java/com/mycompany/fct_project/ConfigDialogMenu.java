@@ -27,6 +27,10 @@ public class ConfigDialogMenu extends javax.swing.JDialog {
         this.profesorId = profesorId;
     }
 
+    public int getProfesorId() {
+        return profesorId;
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -144,10 +148,12 @@ public class ConfigDialogMenu extends javax.swing.JDialog {
     private void jButtonConsultActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConsultActionPerformed
         this.setVisible(false);
         ConfigDialogConsult consult = new ConfigDialogConsult(null, true);
+        consult.setProfesorId(profesorId);
         consult.setVisible(true);
         consult.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent e) {
+                ConfigDialogMenu.this.setProfesorId(consult.getProfesorId());
                 ConfigDialogMenu.this.setVisible(true);
             }
         });
@@ -173,6 +179,7 @@ public class ConfigDialogMenu extends javax.swing.JDialog {
                 tutorFCTDialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
+                        ConfigDialogMenu.this.setProfesorId(tutorFCTDialog.getProfesorId());
                         ConfigDialogMenu.this.setVisible(true);
                     }
                 });
@@ -185,7 +192,6 @@ public class ConfigDialogMenu extends javax.swing.JDialog {
                 JOptionPane.showMessageDialog(this, "Role not recognized.");
                 break;
         }
-        this.setVisible(true);
     }//GEN-LAST:event_jButtonManageActionPerformed
 
     private void jButtonLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLoginActionPerformed
@@ -195,7 +201,8 @@ public class ConfigDialogMenu extends javax.swing.JDialog {
         login.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent e) {
-                ConfigDialogMenu.this.setVisible(false);
+                ConfigDialogMenu.this.setProfesorId(login.getProfesorId());
+                ConfigDialogMenu.this.setVisible(true);
             }
         });
     }//GEN-LAST:event_jButtonLoginActionPerformed
@@ -229,23 +236,19 @@ public class ConfigDialogMenu extends javax.swing.JDialog {
         //</editor-fold>
 
         /* Create and display the dialog */
+        ConfigDialogLogin loginDialog = new ConfigDialogLogin(new javax.swing.JFrame(), false);
+        loginDialog.setVisible(false);
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ConfigDialogLogin loginDialog = new ConfigDialogLogin(new javax.swing.JFrame(), false);
-                loginDialog.setVisible(false);
                 String role = loginDialog.getRole();
-                if (role != null) {
-                    ConfigDialogMenu menuDialog = new ConfigDialogMenu(new javax.swing.JFrame(), true, role);
-                    menuDialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                        @Override
-                        public void windowClosing(java.awt.event.WindowEvent e) {
-                            System.exit(0);
-                        }
-                    });
-                    menuDialog.setVisible(true);
-                } else {
-                    System.exit(0);
-                }
+                ConfigDialogMenu menuDialog = new ConfigDialogMenu(new javax.swing.JFrame(), true, role);
+                menuDialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+                menuDialog.setVisible(true);
             }
         });
     }

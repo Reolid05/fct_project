@@ -13,6 +13,7 @@ public class ConfigDialogConsult extends javax.swing.JDialog {
     /**
      * Creates new form ConfigDialogConsult
      */
+    private int profesorId;
     
     public ConfigDialogConsult(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -21,6 +22,14 @@ public class ConfigDialogConsult extends javax.swing.JDialog {
         setLocationRelativeTo(null);
     }
     
+    public void setProfesorId(int profesorId) {
+        this.profesorId = profesorId;
+    }
+
+    public int getProfesorId() {
+        return profesorId;
+    }
+
     ConfigDialogLogin loginDialog = new ConfigDialogLogin(new javax.swing.JFrame(), true);
     String role = loginDialog.getRole();
 
@@ -141,29 +150,30 @@ public class ConfigDialogConsult extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
         this.setVisible(false);
         ConfigDialogFCT dialog = new ConfigDialogFCT(null, true);
+        //dialog.setProfesorId(this.profesorId);
         dialog.setVisible(true);
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:
         this.setVisible(false);
         ConfigDialogEmpresa dialog = new ConfigDialogEmpresa(null, true);
+        //dialog.setProfesorId(this.profesorId);
         dialog.setVisible(true);
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        // TODO add your handling code here:
         this.setVisible(false);
         ConfigDialogIncidence dialog = new ConfigDialogIncidence(null, true);
+        //dialog.setProfesorId(this.profesorId);
         dialog.setVisible(true);
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButtonBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBackActionPerformed
         this.setVisible(false);
         ConfigDialogMenu menu = new ConfigDialogMenu(null, true, this.role);
+        menu.setProfesorId(this.profesorId);  // Pasar el profesorId
         menu.setVisible(true);
         menu.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override

@@ -47,6 +47,10 @@ public class ConfigDialogGestionTutorFCT extends javax.swing.JDialog {
         });
     }
 
+    public int getProfesorId() {
+        return profesorId;
+    }
+
     public void setProfesorId(int profesorId) {
         this.profesorId = profesorId;
         obtenerNombreGrupo(); // Cargar el nombre del grupo después de establecer el profesorId

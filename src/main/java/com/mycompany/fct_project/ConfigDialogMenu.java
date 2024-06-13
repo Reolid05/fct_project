@@ -172,6 +172,7 @@ public class ConfigDialogMenu extends javax.swing.JDialog {
                 break;
             case "TUTOR_FCT":
                 ConfigDialogGestionTutorFCT tutorFCTDialog = new ConfigDialogGestionTutorFCT(null, true);
+                tutorFCTDialog.setProfesorId(profesorId);
                 tutorFCTDialog.setVisible(true);
                 tutorFCTDialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override

@@ -212,6 +212,8 @@ public class ConfigDialogLogin extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        this.nombreUsuario = jTextField1.getText();
+        
         String url = jTextField2.getText();
         String user = jTextField1.getText();
         String password = new String(jPasswordField1.getPassword());  
@@ -226,10 +228,12 @@ public class ConfigDialogLogin extends javax.swing.JDialog {
             role = auth.authenticateUser(user, password);
 
             if (role != null) {
+                this.profesorId = obtenerProfesorId(nombreUsuario);
                 JOptionPane.showMessageDialog(this, "Login successful! Role: " + role);
                 this.setVisible(false);
-                ConfigDialogMenu menu = new ConfigDialogMenu(new javax.swing.JFrame(), true, role);
-                menu.setVisible(true);
+                ConfigDialogMenu menuDialog = new ConfigDialogMenu(null, true, role);
+                menuDialog.setProfesorId(profesorId); // Pasar el profesorId a través de un método
+                menuDialog.setVisible(true);
             } else {
                 JOptionPane.showMessageDialog(this, "Invalid credentials.");
             }

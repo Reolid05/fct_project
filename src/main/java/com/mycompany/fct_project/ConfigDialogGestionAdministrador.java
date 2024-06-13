@@ -6,6 +6,7 @@ package com.mycompany.fct_project;
 
 import static com.mycompany.fct_project.DatabaseConnection.getConnection;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,18 +24,137 @@ import javax.swing.table.DefaultTableModel;
 public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
 
     private HashMap<String, Integer> sectorMap;
+    private String role;
 
-    public ConfigDialogGestionAdministrador(java.awt.Frame parent, boolean modal) {
+    public ConfigDialogGestionAdministrador(java.awt.Frame parent, boolean modal, String role) {
         super(parent, modal);
         initComponents();
+        this.role = role;
         setResizable(false);
         setLocationRelativeTo(null);
         cargarDatosTabla();
         cargarDatosTablaProfesor();
+        cargarDatosTablaContactos();
+        cargarDatosTablaIncidencias();
         agregarListeners();
         setFieldsEditable(false);
         setFieldsEditableProfesor(false);
+        setFieldsEditableContactos(false);
         cargarSectores();
+    }
+    
+    private void cargarDatosTablaIncidencias() {
+        DefaultTableModel model = (DefaultTableModel) jTableInciedencias.getModel();
+        model.setRowCount(0);
+        String query = "SELECT * FROM incidencia ORDER BY numincidencia";
+        try (Connection con = DatabaseConnection.getConnection();
+             Statement stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                int numincidencia = rs.getInt("numincidencia");
+                Date fechaincidencia = rs.getDate("fechaincidencia");
+                String observaciones = rs.getString("observaciones");
+                String idempresa = rs.getString("idempresa");
+                String cursoescolar = rs.getString("cursoescolar");
+                model.addRow(new Object[]{numincidencia, fechaincidencia, observaciones, idempresa, cursoescolar});
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al cargar los datos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void eliminarIncidencia() {
+        int selectedRow = jTableInciedencias.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione una incidencia para eliminar.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int numincidencia = Integer.parseInt(jTableInciedencias.getValueAt(selectedRow, 0).toString());
+        String query = "DELETE FROM incidencia WHERE numincidencia = ?";
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement pst = con.prepareStatement(query)) {
+            pst.setInt(1, numincidencia);
+            pst.executeUpdate();
+            cargarDatosTablaIncidencias();
+            JOptionPane.showMessageDialog(this, "Incidencia eliminada exitosamente.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al eliminar la incidencia: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    
+    private void cargarDatosTablaContactos() {
+        DefaultTableModel model = (DefaultTableModel) jTable3.getModel();
+        model.setRowCount(0);
+        String query = "SELECT * FROM personal order by idpersonal";
+        try (Connection con = DatabaseConnection.getConnection();
+             Statement stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                int idPersonal = rs.getInt("idpersonal");
+                String nombre = rs.getString("nombre");
+                String apellidos = rs.getString("apellidos");
+                String telefono = rs.getString("telefono");
+                String cargo = rs.getString("cargo");
+                boolean esContacto = rs.getBoolean("esContacto");
+                String idEmpresa = rs.getString("idempresa");
+                model.addRow(new Object[]{idPersonal, nombre, apellidos, telefono, cargo, esContacto, idEmpresa});
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                System.exit(0);
+            }
+        });
+    }
+    
+    private void guardarCambiosContactos() {
+        int idPersonal = Integer.parseInt(jTextFieldIdPersonalID.getText());
+        boolean esContacto = Boolean.parseBoolean(jComboBoxPersonalEsContacto.getSelectedItem().toString());
+
+        String query = "UPDATE personal SET esContacto = ? WHERE idpersonal = ?";
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement pst = con.prepareStatement(query)) {
+            pst.setBoolean(1, esContacto);
+            pst.setInt(2, idPersonal);
+            pst.executeUpdate();
+            cargarDatosTablaContactos();
+            setFieldsEditableContactos(false);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al guardar los cambios: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    private void mostrarDatosSeleccionadosContactos() {
+        int selectedRow = jTable3.getSelectedRow();
+        jTextFieldIdPersonalID.setText(jTable3.getValueAt(selectedRow, 0).toString());
+        jTextFieldPersonalNombre.setText(jTable3.getValueAt(selectedRow, 1).toString());
+        jTextFieldPersonalApellidos.setText(jTable3.getValueAt(selectedRow, 2).toString());
+        jTextFieldPersonalTelefono.setText(jTable3.getValueAt(selectedRow, 3).toString());
+        jTextFieldPersonalCargo.setText(jTable3.getValueAt(selectedRow, 4).toString());
+        jComboBoxPersonalEsContacto.setSelectedItem(jTable3.getValueAt(selectedRow, 5).toString());
+        jTextFieldPersonalIdEmpresa.setText(jTable3.getValueAt(selectedRow, 6).toString());
+        
+        jTextFieldIdPersonalID.setEditable(false);
+        jTextFieldPersonalNombre.setEditable(false);
+        jTextFieldPersonalApellidos.setEditable(false);
+        jTextFieldPersonalTelefono.setEditable(false);
+        jTextFieldPersonalCargo.setEditable(false);
+        jTextFieldPersonalIdEmpresa.setEditable(false);
+        jComboBoxPersonalEsContacto.setEnabled(false); 
+    }
+    
+    private void setFieldsEditableContactos(boolean editable) {
+        jComboBoxPersonalEsContacto.setEnabled(editable);
     }
 
     private void cargarSectores() {
@@ -100,6 +220,22 @@ public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
             jButtonSaveProfe.setEnabled(false);
         });
         jButtonDeleteProfe.addActionListener(evt -> eliminarRegistroProfesor());
+        
+        jTable3.getSelectionModel().addListSelectionListener(event -> {
+            if (!event.getValueIsAdjusting() && jTable3.getSelectedRow() != -1) {
+                mostrarDatosSeleccionadosContactos();
+            }
+        });
+
+        jButtonSaveContactos.addActionListener(evt -> {
+            guardarCambiosContactos();
+            jButtonSaveContactos.setEnabled(true);
+            setFieldsEditable(false);
+        });
+
+        jButtonModifyContacto.addActionListener(evt -> jButtonModifyContactoActionPerformed(evt));
+        
+        jButtonDeleteIncidencia.addActionListener(evt -> eliminarIncidencia());
     }
 
     private void mostrarDatosSeleccionados() {
@@ -402,6 +538,34 @@ public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
         jTable2 = new javax.swing.JTable();
         jButtonSaveProfe = new javax.swing.JButton();
         jButtonBack1 = new javax.swing.JButton();
+        jPanel9 = new javax.swing.JPanel();
+        jPanel10 = new javax.swing.JPanel();
+        jLabel7 = new javax.swing.JLabel();
+        jTextFieldIdPersonalID = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        jTextFieldPersonalNombre = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
+        jTextFieldPersonalApellidos = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        jTextFieldPersonalTelefono = new javax.swing.JTextField();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
+        jTextFieldPersonalCargo = new javax.swing.JTextField();
+        jTextFieldPersonalIdEmpresa = new javax.swing.JTextField();
+        jComboBoxPersonalEsContacto = new javax.swing.JComboBox<>();
+        jButtonModifyContacto = new javax.swing.JButton();
+        jPanel12 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTable3 = new javax.swing.JTable();
+        jButtonSaveContactos = new javax.swing.JButton();
+        jButtonBackContactos = new javax.swing.JButton();
+        jPanel11 = new javax.swing.JPanel();
+        jPanel14 = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jTableInciedencias = new javax.swing.JTable();
+        jButtonBackInidencia = new javax.swing.JButton();
+        jButtonDeleteIncidencia = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -536,9 +700,17 @@ public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
                 {null, null, null}
             },
             new String [] {
-                "IdEmpresa", "Nombre", "Sector"
+                " Id Empresa", "Nombre", "Sector"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(jTable1);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -547,7 +719,7 @@ public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 525, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -579,16 +751,13 @@ public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jButtonSave)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButtonBack))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -745,7 +914,15 @@ public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
             new String [] {
                 "Id Profesores", "Nombre", "Apellidos"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane2.setViewportView(jTable2);
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
@@ -813,6 +990,334 @@ public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
 
         jTabbedPane1.addTab("Gestión Profesores", jPanel4);
 
+        jPanel9.setBackground(new java.awt.Color(217, 239, 255));
+
+        jPanel10.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        jLabel7.setText("ID");
+
+        jTextFieldIdPersonalID.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldIdPersonalIDActionPerformed(evt);
+            }
+        });
+
+        jLabel8.setText("NOMBRE");
+
+        jTextFieldPersonalNombre.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldPersonalNombreActionPerformed(evt);
+            }
+        });
+
+        jLabel9.setText("APELLIDOS");
+
+        jTextFieldPersonalApellidos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldPersonalApellidosActionPerformed(evt);
+            }
+        });
+
+        jLabel10.setText("TELEFONO");
+
+        jTextFieldPersonalTelefono.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldPersonalTelefonoActionPerformed(evt);
+            }
+        });
+
+        jLabel11.setText("CARGO");
+
+        jLabel12.setText("ES CONTACTO?");
+
+        jLabel13.setText("ID EMPRESA");
+
+        jTextFieldPersonalCargo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldPersonalCargoActionPerformed(evt);
+            }
+        });
+
+        jTextFieldPersonalIdEmpresa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldPersonalIdEmpresaActionPerformed(evt);
+            }
+        });
+
+        jComboBoxPersonalEsContacto.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "True", "False" }));
+        jComboBoxPersonalEsContacto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBoxPersonalEsContactoActionPerformed(evt);
+            }
+        });
+
+        jButtonModifyContacto.setText("MODIFY");
+        jButtonModifyContacto.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jButtonModifyContacto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonModifyContactoActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
+        jPanel10.setLayout(jPanel10Layout);
+        jPanel10Layout.setHorizontalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel10Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel10Layout.createSequentialGroup()
+                        .addGap(48, 48, 48)
+                        .addComponent(jLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextFieldIdPersonalID, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel10Layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(jLabel8)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextFieldPersonalNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel10Layout.createSequentialGroup()
+                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextFieldPersonalApellidos))
+                    .addGroup(jPanel10Layout.createSequentialGroup()
+                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextFieldPersonalTelefono)))
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel10Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jLabel13))
+                    .addGroup(jPanel10Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel12)
+                            .addComponent(jLabel11))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jTextFieldPersonalIdEmpresa, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
+                        .addComponent(jTextFieldPersonalCargo, javax.swing.GroupLayout.Alignment.LEADING))
+                    .addComponent(jComboBoxPersonalEsContacto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonModifyContacto, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(47, 47, 47))
+        );
+        jPanel10Layout.setVerticalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel10Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel10Layout.createSequentialGroup()
+                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel7)
+                            .addComponent(jTextFieldIdPersonalID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel8)
+                            .addComponent(jTextFieldPersonalNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel9)
+                            .addComponent(jTextFieldPersonalApellidos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel10Layout.createSequentialGroup()
+                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel11)
+                            .addComponent(jTextFieldPersonalCargo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel12)
+                            .addComponent(jComboBoxPersonalEsContacto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel13)
+                            .addComponent(jTextFieldPersonalIdEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel10)
+                    .addComponent(jTextFieldPersonalTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonModifyContacto, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(12, Short.MAX_VALUE))
+        );
+
+        jPanel12.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        jTable3.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "Id Personal", "Nombre", "Apellidos", "Teléfono", "Cargo", "Es Contacto?", "Id Empresa"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane3.setViewportView(jTable3);
+        if (jTable3.getColumnModel().getColumnCount() > 0) {
+            jTable3.getColumnModel().getColumn(5).setHeaderValue("Es Contacto?");
+            jTable3.getColumnModel().getColumn(6).setHeaderValue("Id Empresa");
+        }
+
+        javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
+        jPanel12.setLayout(jPanel12Layout);
+        jPanel12Layout.setHorizontalGroup(
+            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel12Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel12Layout.setVerticalGroup(
+            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel12Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jButtonSaveContactos.setText("Save");
+        jButtonSaveContactos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonSaveContactosActionPerformed(evt);
+            }
+        });
+
+        jButtonBackContactos.setText("Back");
+        jButtonBackContactos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonBackContactosActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
+        jPanel9.setLayout(jPanel9Layout);
+        jPanel9Layout.setHorizontalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
+                        .addComponent(jButtonSaveContactos)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 397, Short.MAX_VALUE)
+                        .addComponent(jButtonBackContactos)))
+                .addContainerGap())
+        );
+        jPanel9Layout.setVerticalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtonBackContactos)
+                    .addComponent(jButtonSaveContactos))
+                .addContainerGap())
+        );
+
+        jTabbedPane1.addTab("Gestión contactos", jPanel9);
+
+        jPanel11.setBackground(new java.awt.Color(217, 239, 255));
+
+        jPanel14.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        jTableInciedencias.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "Número", "Fecha", "Observaciones", "Id Empresa", "Curso Escolar"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jTableInciedencias.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
+            public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
+                jTableInciedenciasMouseWheelMoved(evt);
+            }
+        });
+        jScrollPane4.setViewportView(jTableInciedencias);
+
+        javax.swing.GroupLayout jPanel14Layout = new javax.swing.GroupLayout(jPanel14);
+        jPanel14.setLayout(jPanel14Layout);
+        jPanel14Layout.setHorizontalGroup(
+            jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel14Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 525, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel14Layout.setVerticalGroup(
+            jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel14Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jButtonBackInidencia.setText("Back");
+        jButtonBackInidencia.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonBackInidenciaActionPerformed(evt);
+            }
+        });
+
+        jButtonDeleteIncidencia.setText("Delete");
+        jButtonDeleteIncidencia.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonDeleteIncidenciaActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
+        jPanel11.setLayout(jPanel11Layout);
+        jPanel11Layout.setHorizontalGroup(
+            jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel11Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel11Layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(jButtonDeleteIncidencia)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButtonBackInidencia)))
+                .addContainerGap())
+        );
+        jPanel11Layout.setVerticalGroup(
+            jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel11Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtonBackInidencia)
+                    .addComponent(jButtonDeleteIncidencia))
+                .addContainerGap())
+        );
+
+        jTabbedPane1.addTab("Gestión incidencias", jPanel11);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -862,17 +1367,15 @@ public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
 
     private void jButtonBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBackActionPerformed
         this.setVisible(false);
-        ConfigDialogLogin loginDialog = new ConfigDialogLogin(new javax.swing.JFrame(), true);
-        String role = loginDialog.getRole();
-        loginDialog.setVisible(false);
-        ConfigDialogMenu menu = new ConfigDialogMenu(new javax.swing.JFrame(), true, role);
+        ConfigDialogMenu menu = new ConfigDialogMenu(null, true, this.role);
         menu.setVisible(true);
-        loginDialog.addWindowListener(new java.awt.event.WindowAdapter() {
+        menu.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent e) {
                 ConfigDialogGestionAdministrador.this.setVisible(true);
             }
         });
+        this.dispose();
     }//GEN-LAST:event_jButtonBackActionPerformed
 
     private void jTextFieldNombreProfeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldNombreProfeActionPerformed
@@ -908,16 +1411,96 @@ public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
 
     private void jButtonBack1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBack1ActionPerformed
         // TODO add your handling code here:
-        ConfigDialogLogin loginDialog = new ConfigDialogLogin(new javax.swing.JFrame(), true);
-        String role = loginDialog.getRole();
         this.setVisible(false);
-        ConfigDialogMenu menu = new ConfigDialogMenu(new javax.swing.JFrame(), true, role);
+        ConfigDialogMenu menu = new ConfigDialogMenu(null, true, this.role);
         menu.setVisible(true);
+        menu.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                ConfigDialogGestionAdministrador.this.setVisible(true);
+            }
+        });
+        this.dispose();
     }//GEN-LAST:event_jButtonBack1ActionPerformed
 
     private void jTextFieldApellidosProfeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldApellidosProfeActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextFieldApellidosProfeActionPerformed
+
+    private void jTextFieldIdPersonalIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldIdPersonalIDActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldIdPersonalIDActionPerformed
+
+    private void jButtonSaveContactosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSaveContactosActionPerformed
+        // TODO add your handling code here:
+        guardarCambiosContactos();
+        JOptionPane.showMessageDialog(this, "Registro de profesor modificado exitosamente.");
+    }//GEN-LAST:event_jButtonSaveContactosActionPerformed
+
+    private void jButtonBackContactosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBackContactosActionPerformed
+        // TODO add your handling code here:
+        this.setVisible(false);
+        ConfigDialogMenu menu = new ConfigDialogMenu(null, true, this.role);
+        menu.setVisible(true);
+        menu.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                ConfigDialogGestionAdministrador.this.setVisible(true);
+            }
+        });
+        this.dispose();
+    }//GEN-LAST:event_jButtonBackContactosActionPerformed
+
+    private void jTextFieldPersonalNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldPersonalNombreActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldPersonalNombreActionPerformed
+
+    private void jTextFieldPersonalApellidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldPersonalApellidosActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldPersonalApellidosActionPerformed
+
+    private void jTextFieldPersonalTelefonoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldPersonalTelefonoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldPersonalTelefonoActionPerformed
+
+    private void jTextFieldPersonalIdEmpresaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldPersonalIdEmpresaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldPersonalIdEmpresaActionPerformed
+
+    private void jTextFieldPersonalCargoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldPersonalCargoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldPersonalCargoActionPerformed
+
+    private void jComboBoxPersonalEsContactoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxPersonalEsContactoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBoxPersonalEsContactoActionPerformed
+
+    private void jButtonModifyContactoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonModifyContactoActionPerformed
+        // TODO add your handling code here:
+        setFieldsEditableContactos(true);
+    }//GEN-LAST:event_jButtonModifyContactoActionPerformed
+
+    private void jButtonBackInidenciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBackInidenciaActionPerformed
+        // TODO add your handling code here:
+        this.setVisible(false);
+        ConfigDialogMenu menu = new ConfigDialogMenu(null, true, this.role);
+        menu.setVisible(true);
+        menu.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                ConfigDialogGestionAdministrador.this.setVisible(true);
+            }
+        });
+        this.dispose();
+    }//GEN-LAST:event_jButtonBackInidenciaActionPerformed
+
+    private void jButtonDeleteIncidenciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteIncidenciaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonDeleteIncidenciaActionPerformed
+
+    private void jTableInciedenciasMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_jTableInciedenciasMouseWheelMoved
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTableInciedenciasMouseWheelMoved
 
     /**
      * @param args the command line arguments
@@ -952,14 +1535,15 @@ public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ConfigDialogGestionAdministrador dialog = new ConfigDialogGestionAdministrador(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                String role = "ADMINISTRADOR";
+                ConfigDialogMenu configMenu = new ConfigDialogMenu(new javax.swing.JFrame(), true, role);
+                configMenu.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
                         System.exit(0);
                     }
                 });
-                dialog.setVisible(true);
+                configMenu.setVisible(true);
             }
         });
     }
@@ -969,22 +1553,39 @@ public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
     private javax.swing.JButton jButtonAddProfe;
     private javax.swing.JButton jButtonBack;
     private javax.swing.JButton jButtonBack1;
+    private javax.swing.JButton jButtonBackContactos;
+    private javax.swing.JButton jButtonBackInidencia;
     private javax.swing.JButton jButtonDelete;
+    private javax.swing.JButton jButtonDeleteIncidencia;
     private javax.swing.JButton jButtonDeleteProfe;
     private javax.swing.JButton jButtonModify;
+    private javax.swing.JButton jButtonModifyContacto;
     private javax.swing.JButton jButtonModifyProfe;
     private javax.swing.JButton jButtonNew;
     private javax.swing.JButton jButtonNewProfe;
     private javax.swing.JButton jButtonSave;
+    private javax.swing.JButton jButtonSaveContactos;
     private javax.swing.JButton jButtonSaveProfe;
+    private javax.swing.JComboBox<String> jComboBoxPersonalEsContacto;
     private javax.swing.JComboBox<String> jComboBoxSector;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel10;
+    private javax.swing.JPanel jPanel11;
+    private javax.swing.JPanel jPanel12;
+    private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -992,15 +1593,26 @@ public class ConfigDialogGestionAdministrador extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
+    private javax.swing.JTable jTable3;
+    private javax.swing.JTable jTableInciedencias;
     private javax.swing.JTextField jTextFieldApellidosProfe;
     private javax.swing.JTextField jTextFieldCIF;
+    private javax.swing.JTextField jTextFieldIdPersonalID;
     private javax.swing.JTextField jTextFieldIdProfe;
     private javax.swing.JTextField jTextFieldNombre;
     private javax.swing.JTextField jTextFieldNombreProfe;
+    private javax.swing.JTextField jTextFieldPersonalApellidos;
+    private javax.swing.JTextField jTextFieldPersonalCargo;
+    private javax.swing.JTextField jTextFieldPersonalIdEmpresa;
+    private javax.swing.JTextField jTextFieldPersonalNombre;
+    private javax.swing.JTextField jTextFieldPersonalTelefono;
     // End of variables declaration//GEN-END:variables
 }

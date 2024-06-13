@@ -13,6 +13,7 @@ public class ConfigDialogConsult extends javax.swing.JDialog {
     /**
      * Creates new form ConfigDialogConsult
      */
+    
     public ConfigDialogConsult(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
@@ -162,17 +163,15 @@ public class ConfigDialogConsult extends javax.swing.JDialog {
 
     private void jButtonBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBackActionPerformed
         this.setVisible(false);
-        ConfigDialogLogin loginDialog = new ConfigDialogLogin(new javax.swing.JFrame(), true);
-        String role = loginDialog.getRole();
-        loginDialog.setVisible(false);
-        ConfigDialogMenu menu = new ConfigDialogMenu(new javax.swing.JFrame(), true, role);
+        ConfigDialogMenu menu = new ConfigDialogMenu(null, true, this.role);
         menu.setVisible(true);
-        loginDialog.addWindowListener(new java.awt.event.WindowAdapter() {
+        menu.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent e) {
                 ConfigDialogConsult.this.setVisible(true);
             }
         });
+        this.dispose();
     }//GEN-LAST:event_jButtonBackActionPerformed
 
     /**

@@ -26,10 +26,6 @@ public class ConfigDialogMenu extends javax.swing.JDialog {
     public void setProfesorId(int profesorId) {
         this.profesorId = profesorId;
     }
-    
-    public String getRole() {
-        return role;
-    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -161,7 +157,7 @@ public class ConfigDialogMenu extends javax.swing.JDialog {
         this.setVisible(false);
         switch (role) {
             case "ADMINISTRADOR":
-                ConfigDialogGestionAdministrador adminDialog = new ConfigDialogGestionAdministrador(null, true);
+                ConfigDialogGestionAdministrador adminDialog = new ConfigDialogGestionAdministrador(null, true, role);
                 adminDialog.setVisible(true);
                 adminDialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override

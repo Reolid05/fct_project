@@ -17,7 +17,7 @@ public class ConfigDialogLogin extends javax.swing.JDialog {
 
     private String nombreUsuario;
     private int profesorId;
-    private String role;
+    private String role = "";
 
     /**
      * Creates new form ConfigDialog
